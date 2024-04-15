@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Добавление песни</title>
+</head>
+<body>
+<a data-th-href="@{/tops/{topId}(topId=${topId})}">К топу</a>
+<h1>Добавление песни</h1>
+<div data-th-if="${errors}">
+    <h2>Допущены ошибки</h2>
+    <ul>
+        <li data-th-each="error: ${errors}" data-th-text="${error}"></li>
+    </ul>
+</div>
+
+<form enctype="multipart/form-data" data-th-action="@{/songs/create}" method="POST">
+    <input type="hidden" data-th-name="topId" data-th-value="${topId}">
+    <label>
+        Исполнитель:<br>
+        <input type="text" name="artist" data-th-value="${payload?.artist}">
+    </label><br>
+    <label>
+        Название:<br>
+        <input type="text" name="title" data-th-value="${payload?.title}">
+    </label><br>
+    <label>
+        Описание:<br>
+        <textarea name="description" data-th-text="${payload?.description}"></textarea>
+    </label><br>
+    <label>
+        Битрейт:<br>
+        <input type="text" name="bitRate" data-th-value="${payload?.bitRate}">
+    </label><br>
+    <label>
+        Дата выпуска:<br>
+        <input type="date" name="releasedAt" data-th-value="${payload?.releasedAt}">
+    </label><br>
+    <label>
+        Жанр:<br>
+        <select id="genreId" name="genreId">
+            <option th:each="genre : ${genres}" th:value="${genre.id}" th:text="${genre.name}"
+                    th:selected="${genre.id==payload?.genreId}"></option>
+        </select>
+    </label><br>
+
+    <label>
+        Файл:<br>
+        <input type="file" name="file" accept="audio/*"/>
+    </label><br>
+
+    <button type="submit">Создать</button>
+</form>
+
+</body>
+</html>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Редактирование песни</title>
+</head>
+<body>
+<h1>Редактирование песни</h1>
+
+<div data-th-if="${errors}">
+    <h2>Допущены ошибки</h2>
+    <ul>
+        <li data-th-each="error: ${errors}" data-th-text="${error}"></li>
+    </ul>
+</div>
+
+<form method="post" data-th-action="@{/songs/{songId}(songId=${song.id})}">
+    <input type="hidden" data-th-name="previousPage" data-th-value="${previousPage}">
+    <label>
+        Исполнитель:<br>
+        <input type="text" name="artist" data-th-value="${payload != null ? payload.artist : song.artist}">
+    </label><br>
+    <label>
+        Название:<br>
+        <input type="text" name="title" data-th-value="${payload != null ? payload.title : song.title}">
+    </label><br>
+    <label>
+        Описание:<br>
+        <textarea name="description" data-th-text="${payload != null ? payload.description : song.description}"></textarea>
+    </label><br>
+    <label>
+        Битрейт:<br>
+        <input type="text" name="bitRate" data-th-value="${payload != null ? payload.bitRate : song.bitRate}">
+    </label><br>
+    <label>
+        Дата выпуска:<br>
+        <input type="date" name="releasedAt" data-th-value="${payload != null ? payload.releasedAt : song.releasedAt}">
+    </label><br>
+    <label>
+        Жанр:<br>
+        <select id="genreId" name="genreId">
+            <option th:each="genre : ${genres}" th:value="${genre.id}" th:text="${genre.name}"
+                    th:selected="${genre.id==(payload != null ? payload.genreId : song.genre.id)}"></option>
+        </select>
+    </label><br>
+
+    <button type="submit">Изменить</button>
+</form>
+
+<form method="post" data-th-action="@{/songs/{songId}/delete(songId=${song.id})}">
+    <input type="hidden" data-th-name="previousPage" data-th-value="${previousPage}">
+    <button type="submit">Удалить</button>
+</form>
+
+</body>
+</html>

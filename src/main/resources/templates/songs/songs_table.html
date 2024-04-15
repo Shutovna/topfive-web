@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Все песни</title>
+    <link rel="stylesheet" th:href="@{/styles.css}"></link>
+</head>
+<body>
+
+<a data-th-href="@{/tops/table}">К топам</a>
+<h1>Все песни</h1>
+
+<table class="zui-table">
+    <thead>
+    <tr>
+        <th>#</th>
+        <th>Исполнитель</th>
+        <th>Композиция</th>
+        <th>Описание</th>
+        <th>Битрейт</th>
+        <th>Дата выхода</th>
+        <th>Жанр</th>
+        <th>Ссылка</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr data-th-each="row : ${items}">
+        <td>
+            <a data-th-href="@{/songs/{songId}(songId=${row.item.id})}"
+               data-th-text="${row.item.id}"></a>
+        </td>
+        <td data-th-text="${row.item.artist}"></td>
+        <td data-th-text="${row.item.title}"></td>
+        <td data-th-text="${row.item.description}"></td>
+        <td data-th-text="${row.item.bitRate}"></td>
+        <td data-th-text="${#temporals.format(row.item.releasedAt, 'dd/MM/yyyy')}"></td>
+        <td data-th-text="${row.item.genre?.name}"></td>
+        <td>
+            <audio controls th:src="${row.url}"></audio>
+            <a th:href="${row.url}" th:text="${row.item.data.filename}"></a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

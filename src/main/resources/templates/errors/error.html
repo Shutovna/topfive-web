@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title data-th-text="#{'errors.title'}"></title>
+</head>
+<body>
+<h1 data-th-text="#{'errors.title'}"></h1>
+
+<h2>Failed URL: <p data-th-text="${url}"></p></h2>
+<h2>Exception: <p data-th-text="${exception}"></p></h2>
+<table>
+    <tr data-th-each="ste : ${stackTrace}">
+        <td data-th-text="${ste}"></td>
+    </tr>
+</table>
+
+</body>
+</html>

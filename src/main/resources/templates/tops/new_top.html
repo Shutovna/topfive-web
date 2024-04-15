@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Создание топа</title>
+</head>
+<body>
+<a data-th-href="@{/tops/table}">К списку топов</a>
+<h1>Новый топ</h1>
+<div data-th-if="${errors}">
+    <h2>Допущены ошибки</h2>
+    <ul>
+        <li data-th-each="error: ${errors}" data-th-text="${error}"></li>
+    </ul>
+</div>
+
+<form data-th-action="@{/tops/create}" method="POST">
+    <label>
+        Название:<br>
+        <input type="text" name="title" data-th-value="${top?.title}">
+    </label><br>
+    <label>
+        Описание:<br>
+        <textarea name="details" data-th-text="${top?.details}"></textarea>
+    </label><br>
+
+    <label>Выберите тип топа:<br>
+       <select name="topType" id="topType">
+            <option th:each="type : ${topTypes}" th:value="${type}" th:text="${type.name}"></option>
+        </select>
+    </label>
+
+    <button type="submit">Создать</button>
+</form>
+
+</body>
+</html>

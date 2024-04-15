@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Редактирование топа</title>
+</head>
+<body>
+<h1>Редактирование топа</h1>
+
+<div data-th-if="${errors}">
+    <h2>Допущены ошибки</h2>
+    <ul>
+        <li data-th-each="error: ${errors}" data-th-text="${error}"></li>
+    </ul>
+</div>
+
+<form method="post" data-th-action="@{/tops/{topId}/edit(topId=${top.id})}">
+    <label>
+        Название:<br>
+        <input type="text" name="title" data-th-value="${payload != null ? payload.title : top.title}">
+    </label><br>
+    <label>
+        Описание:<br>
+        <textarea name="details" data-th-text="${payload != null ? payload.details : top.details}"></textarea>
+    </label><br>
+    <button type="submit">Изменить</button>
+</form>
+
+</body>
+</html>

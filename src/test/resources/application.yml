@@ -1,0 +1,25 @@
+spring:
+  datasource:
+    url: jdbc:tc:postgresql:16:///topfive?TC_DAEMON=true
+    username: topfive
+    password: topfive
+
+topfive:
+  test:
+    username: nikitos
+  file:
+    store:
+      dir: C:\topfive-files
+
+logging:
+  level:
+    org:
+      hibernate:
+        nodeValue: info
+        stat: debug
+        SQL_SLOW: info
+        SQL: debug
+        cache: debug
+        orm:
+          jdbc:
+            bind: trace

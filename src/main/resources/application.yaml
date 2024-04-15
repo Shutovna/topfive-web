@@ -1,0 +1,45 @@
+server:
+  port: '8080'
+
+spring:
+  application:
+    name:
+      topfive-web
+  datasource:
+    url: jdbc:postgresql://localhost:5432/topfive
+    username: topfive
+    password: her
+    hikari:
+      connectionTimeout: '20000'
+      maximumPoolSize: '5'
+  flyway:
+    schemas:
+      - public
+      - topfive
+  jpa:
+    show-sql: true
+  servlet:
+    multipart:
+      max-file-size: 200MB
+      max-request-size: 200MB
+
+topfive:
+  test:
+    username: nikitos
+  file:
+    store:
+      dir: C:\topfive-files
+
+logging:
+  level:
+    root: info
+    com:
+      shutovna: debug
+    org:
+      springframework:
+        security: debug
+        web:
+          filter:
+            CommonsRequestLoggingFilter: DEBUG
+
+

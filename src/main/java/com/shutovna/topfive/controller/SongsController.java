@@ -35,6 +35,7 @@ public class SongsController {
 
     @GetMapping
     public String showSongs(Model model) {
+        log.debug("showSongs");
         ItemTable<Song> itemTable = new ItemTable<>(songService.findAllSongs());
         model.addAttribute("items", itemTable.getRows());
         return "songs/songs_table";

@@ -13,6 +13,24 @@
 </head>
 <body class="container">
 
+<div class="container">
+    <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
+        <a data-th-href="@{/tops/table}"
+           class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
+            <img src="/number-5.png" alt="Топ Пять" style="width: 64px; height: 64px">
+            <span class="fs-4 ms-1">Топ Пять</span>
+        </a>
+
+        <ul class="nav nav-pills">
+            <li class="nav-item"><a data-th-href="@{/tops/table}" class="nav-link" aria-current="page">Топы</a></li>
+            <li class="nav-item"><a data-th-href="@{/songs/table}" class="nav-link active">Песни</a></li>
+            <li class="nav-item"><a href="#" class="nav-link">Видео</a></li>
+            <li class="nav-item"><a href="#" class="nav-link">Фото</a></li>
+            <li class="nav-item"><a href="#" class="nav-link">О сайте</a></li>
+        </ul>
+    </header>
+</div>
+
 <a data-th-href="@{/tops/table}">К топам</a>
 <h1>Все песни</h1>
 

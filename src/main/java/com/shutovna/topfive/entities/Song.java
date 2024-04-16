@@ -28,9 +28,9 @@ public class Song extends Item {
     @NotNull
     protected Genre genre;
 
-    public Song(Integer id, String title, String description, ItemData data, String username,
+    public Song(Integer id, String title, String description, ItemData data, User user,
                 String artist, LocalDate releasedAt, Integer bitRate, Genre genre) {
-        super(id, title, description, data, username);
+        super(id, title, description, data, user);
         this.artist = artist;
         this.releasedAt = releasedAt;
         this.bitRate = bitRate;
@@ -48,7 +48,7 @@ public class Song extends Item {
                 ", title='" + title + '\'' +
                 ", data='" + data + '\'' +
                 ", description='" + description + '\'' +
-                ", username='" + username + '\'' +
+                ", username='" + getUser().getUsername() + '\'' +
                 '}';
     }
 

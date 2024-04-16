@@ -38,8 +38,9 @@ public abstract class Item {
     @NotNull
     protected ItemData data;
 
-    //@NotNull
-    protected String username;
+    @ManyToOne
+    @NotNull
+    protected User user;
 
     @ManyToMany(mappedBy = "items")
     @JsonIgnore
@@ -49,12 +50,12 @@ public abstract class Item {
     @JoinTable(schema = "topfive")
     protected List<Rating> ratings = new ArrayList<>();
 
-    public Item(Integer id, @NotNull String title, String description, @NotNull ItemData data, String username) {
+    public Item(Integer id, @NotNull String title, String description, @NotNull ItemData data, User user) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.data = data;
-        this.username = username;
+        this.user = user;
     }
 
     public void addTop(Top top) {

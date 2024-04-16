@@ -22,9 +22,9 @@ public class Video extends Item {
     @ManyToOne
     protected Genre genre;
 
-    public Video(Integer id, String title, String description, ItemData data, String username,
+    public Video(Integer id, String title, String description, ItemData data, User user,
                  String director, String actors, Integer releasedYear, Genre genre) {
-        super(id, title, description, data, username);
+        super(id, title, description, data, user);
         this.director = director;
         this.actors = actors;
         this.releasedYear = releasedYear;
@@ -41,7 +41,7 @@ public class Video extends Item {
                 ", id=" + id +
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
-                ", username='" + username + '\'' +
+                ", username='" + getUser().getUsername() + '\'' +
                 ", data=" + data +
                 '}';
     }

@@ -39,12 +39,11 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(Customizer.withDefaults())
                 .authorizeHttpRequests(authorizeHttpRequests ->
-                        authorizeHttpRequests.anyRequest().permitAll()
+                        authorizeHttpRequests.anyRequest().hasRole("USER")
                 )
                 .formLogin(Customizer.withDefaults())
                 .logout(Customizer.withDefaults())
                 .authenticationProvider(authenticationProvider());
         return http.build();
     }
-
 }

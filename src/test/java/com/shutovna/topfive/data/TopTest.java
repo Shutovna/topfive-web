@@ -4,7 +4,6 @@ import com.shutovna.topfive.entities.*;
 import jakarta.validation.ConstraintViolationException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,8 +20,8 @@ public class TopTest {
     @Autowired
     SongRepository songRepository;
 
-    @Value("${topfive.test.username}")
-    String testUsername;
+    @Autowired
+    private UserRepository userRepository;
 
     @Test
     public void testCreate() {
@@ -37,8 +36,8 @@ public class TopTest {
         assertTrue(topDB.getRatings().isEmpty());
     }
 
-    private String getTestUser() {
-        return testUsername;
+    private User getTestUser() {
+        return userRepository.findById(1).orElseThrow();
     }
 
     @Test

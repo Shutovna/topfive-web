@@ -1,4 +1,5 @@
 package com.shutovna.topfive.service;
+import com.shutovna.topfive.entities.User;
 import com.shutovna.topfive.entities.payload.NewSongPayload;
 import com.shutovna.topfive.entities.Song;
 import com.shutovna.topfive.entities.payload.UpdateSongPayload;
@@ -9,7 +10,7 @@ import java.util.Optional;
 public interface SongService {
     List<Song> findAllSongs();
 
-    Song createSong(NewSongPayload payload, String username);
+    Song createSong(NewSongPayload payload, User user);
 
     Optional<Song> findSong(Integer songId);
 

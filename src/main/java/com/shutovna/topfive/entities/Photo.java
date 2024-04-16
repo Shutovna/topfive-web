@@ -14,9 +14,9 @@ import lombok.Setter;
 public class Photo extends Item {
     protected String modelName;
 
-    public Photo(Integer id, String title, String description, ItemData data, String username,
+    public Photo(Integer id, String title, String description, ItemData data, User user,
                  String modelName) {
-        super(id, title, description, data, username);
+        super(id, title, description, data, user);
         this.modelName = modelName;
     }
 
@@ -27,7 +27,7 @@ public class Photo extends Item {
                 ", id=" + id +
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
-                ", username='" + username + '\'' +
+                ", username='" + getUser().getUsername() + '\'' +
                 ", data=" + data +
                 '}';
     }

@@ -33,10 +33,10 @@ public class SongTest {
     @Autowired
     private GenreRepository genreRepository;
 
-    private final String fileName = "example_file.xml";
+    @Autowired
+    private UserRepository userRepository;
 
-    @Value("${topfive.test.username}")
-    private String testUsername;
+    private final String fileName = "example_file.xml";
 
     @Test
     public void testWithEM() {
@@ -54,7 +54,7 @@ public class SongTest {
         song.setGenre(genre);
         song.setData(new ItemData(fileName, "type"));
         song.setReleasedAt(LocalDate.now());
-        song.setUsername(getTestUser());
+        song.setUser(getTestUser());
         return song;
     }
 
@@ -73,7 +73,7 @@ public class SongTest {
         song2.setData(new ItemData(fileName, "type"));
         song2.setReleasedAt(null);
         song.setBitRate(312);
-        song2.setUsername(getTestUser());
+        song2.setUser(getTestUser());
         song2 = songRepository.save(song2);
 
         List<Song> all = songRepository.findAll();
@@ -90,6 +90,8 @@ public class SongTest {
         assertEquals("type", songDb.getData().getContentType());
         assertEquals(312, songDb.getBitRate());
         assertEquals(LocalDate.now(), songDb.getReleasedAt());
+        assertEquals(1, songDb.getUser().getId());
+        assertEquals("nikitos", songDb.getUser().getUsername());
         assertTrue(songDb.getRatings().isEmpty());
 
         Song songDb2 = songRepository.findById(song2.getId()).orElseThrow();
@@ -128,6 +130,8 @@ public class SongTest {
         assertEquals(genre2, songDB.getGenre());
         assertEquals(300, songDB.getBitRate());
         assertEquals(releasedAt, songDB.getReleasedAt());
+        assertEquals(1, songDB.getUser().getId());
+        assertEquals("nikitos", songDB.getUser().getUsername());
 
     }
 
@@ -182,8 +186,8 @@ public class SongTest {
         assertTrue(topDB.get().getItems().isEmpty());
     }
 
-    private String getTestUser() {
-        return testUsername;
+    private User getTestUser() {
+        return userRepository.findById(1).orElseThrow();
     }
 
 }

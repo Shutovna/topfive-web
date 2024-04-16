@@ -2,16 +2,19 @@ package com.shutovna.topfive.controller;
 
 import com.shutovna.topfive.controller.util.ItemRow;
 import com.shutovna.topfive.controller.util.ItemTable;
+import com.shutovna.topfive.entities.User;
 import com.shutovna.topfive.entities.payload.NewSongPayload;
 import com.shutovna.topfive.entities.Song;
 import com.shutovna.topfive.service.GenreService;
 import com.shutovna.topfive.service.SongService;
+import com.shutovna.topfive.service.UserService;
 import io.micrometer.common.util.StringUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.ArrayUtils;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -33,7 +36,9 @@ public class SongsController {
     private final SongService songService;
     private final GenreService genreService;
 
-    @GetMapping
+    private final UserService userService;
+
+    @GetMapping("table")
     public String showSongs(Model model) {
         log.debug("showSongs");
         ItemTable<Song> itemTable = new ItemTable<>(songService.findAllSongs());
@@ -81,7 +86,8 @@ public class SongsController {
                     .toList());
             return "tops/new_top";
         }
-        songService.createSong(songPayload, principal.getName());
+        User user = userService.loadUserByUsername(principal.getName());
+        songService.createSong(songPayload, user);
         return "redirect:/tops/%d".formatted(topId);
     }
 }

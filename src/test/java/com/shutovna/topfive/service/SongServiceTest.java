@@ -38,14 +38,12 @@ public class SongServiceTest {
     @InjectMocks
     DefaultSongService songService;
 
-    String testUsername = YamlUtil.getPropertyValue("topfive.test.username");
-
     @Test
     public void findAllSongs_ReturnsSongList() {
         // given
         Song song = new Song(1, "tille", null,
                 new ItemData("file.mp3", "audio/mpeg"),
-                testUsername, "artist", LocalDate.now(), 192, null);
+                new User(1), "artist", LocalDate.now(), 192, null);
         List<Song> songsList = List.of(song);
         doReturn(songsList).when(songRepository).findAll();
 
@@ -65,7 +63,7 @@ public class SongServiceTest {
         // given
         Song song = new Song(1, "tille", null,
                 new ItemData("file.mp3", "audio/mpeg"),
-                testUsername, "artist", LocalDate.now(), 192, null);
+                new User(1), "artist", LocalDate.now(), 192, null);
         doReturn(Optional.of(song)).when(songRepository).findById(1);
 
         // when
@@ -94,18 +92,18 @@ public class SongServiceTest {
         Integer genreId = 1;
         byte[] data = {1, 3, 4};
 
-        Top top = new Top(topId, TopType.SONG, "title", null, testUsername);
+        Top top = new Top(topId, TopType.SONG, "title", null, new User(1));
         Genre genre = new Genre(1, null);
 
         Song song = new Song(null, title, description,
                 new ItemData(filename, contentType),
-                testUsername, artist, releasedAt, bitRate, genre);
+                new User(1), artist, releasedAt, bitRate, genre);
 
         doReturn(Optional.of(top)).when(topRepository).findById(topId);
 
         doReturn(new Song(songId, title, description,
                 new ItemData(filename, contentType),
-                testUsername, artist, releasedAt, bitRate, genre)
+                new User(1), artist, releasedAt, bitRate, genre)
         ).when(songRepository).save(song);
 
         doReturn(Optional.of(new Genre(1, "Metall"))).when(genreRepository).findById(1);
@@ -114,12 +112,12 @@ public class SongServiceTest {
         Song result = songService.createSong(
                 new NewSongPayload(artist, title, description, bitRate, releasedAt, genreId,
                         topId, filename, data, contentType),
-                testUsername);
+                new User(1));
 
         // then
         assertEquals(new Song(songId, title, description,
                         new ItemData(filename, contentType),
-                        testUsername, artist, releasedAt, bitRate, genre),
+                        new User(1), artist, releasedAt, bitRate, genre),
                 result);
         verify(songRepository).save(song);
         verify(genreRepository).findById(genreId);
@@ -145,7 +143,7 @@ public class SongServiceTest {
 
         doReturn(Optional.of(new Song(songId, title, description,
                 new ItemData(filename, contentType),
-                testUsername, artist, releasedAt, bitRate, new Genre(genreId)))
+                new User(1), artist, releasedAt, bitRate, new Genre(genreId)))
         ).when(songRepository).findById(songId);
 
         doReturn(Optional.of(new Genre(genreId, "Metall"))).when(genreRepository).findById(1);
@@ -201,7 +199,7 @@ public class SongServiceTest {
 
         Song song = new Song(songId, title, description,
                 new ItemData(filename, contentType),
-                testUsername, artist, releasedAt, bitRate, new Genre(genreId));
+                new User(1), artist, releasedAt, bitRate, new Genre(genreId));
         doReturn(Optional.of(song)).when(songRepository).findById(songId);
 
         //when

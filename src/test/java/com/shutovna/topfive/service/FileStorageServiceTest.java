@@ -1,6 +1,7 @@
 package com.shutovna.topfive.service;
 
 import com.shutovna.topfive.data.ItemRepository;
+import com.shutovna.topfive.entities.User;
 import com.shutovna.topfive.entities.payload.DownloadItemDataPayload;
 import com.shutovna.topfive.entities.ItemData;
 import com.shutovna.topfive.entities.Song;
@@ -33,8 +34,6 @@ class FileStorageServiceTest {
     @InjectMocks
     DefaultFileStorageService itemService;
 
-    String testUsername = YamlUtil.getPropertyValue("topfive.test.username");
-
     @BeforeEach
     public void before() {
         itemService.setFileStoreDir(fileStoreDir);
@@ -53,7 +52,7 @@ class FileStorageServiceTest {
         song.setDescription("testDescription");
         song.setData(itemData);
         song.setReleasedAt(null);
-        song.setUsername(testUsername);
+        song.setUser(new User(1));
         File outFile = getOutFile(filename);
         outFile.createNewFile();
         FileCopyUtils.copy(data, new FileOutputStream(outFile));

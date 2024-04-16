@@ -31,6 +31,16 @@ CREATE TABLE topfive.users (
                                password character varying(255) NOT NULL
 );
 
+CREATE TABLE topfive.role (
+                               id integer NOT NULL,
+                               name character varying(255) UNIQUE NOT NULL
+);
+
+CREATE TABLE topfive.user_roles (
+                               user_id integer NOT NULL,
+                               role_id integer NOT NULL
+);
+
 --
 -- Name: genre; Type: TABLE; Schema: public; Owner: postgres
 --
@@ -47,7 +57,7 @@ CREATE TABLE topfive.genre (
 
 CREATE TABLE topfive.item (
                              id integer NOT NULL,
-                             username character varying(255) NOT NULL,
+                             user_id integer NOT NULL,
                              content_type character varying(255) NOT NULL,
                              description character varying(255),
                              filename character varying(255) NOT NULL,
@@ -82,7 +92,7 @@ CREATE TABLE topfive.photo (
 CREATE TABLE topfive.rating (
                                id integer NOT NULL,
                                rating_value integer,
-                               username character varying(255) NOT NULL
+                               user_id integer NOT NULL
 );
 
 --
@@ -105,7 +115,7 @@ CREATE TABLE topfive.song (
 CREATE TABLE topfive.top (
                             id integer NOT NULL,
                             type smallint NOT NULL,
-                            username character varying(255) NOT NULL,
+                            user_id integer NOT NULL,
                             details character varying(255),
                             title character varying(255) NOT NULL,
                             CONSTRAINT top_type_check CHECK (((type >= 0) AND (type <= 2)))
@@ -148,6 +158,12 @@ CREATE TABLE topfive.video (
 
 ALTER TABLE ONLY topfive.users
     ADD CONSTRAINT users_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY topfive.role
+    ADD CONSTRAINT role_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY topfive.user_roles
+    ADD CONSTRAINT user_roles_pkey PRIMARY KEY (user_id, role_id);
 
 
 --
@@ -238,6 +254,21 @@ ALTER TABLE ONLY topfive.video
     ADD CONSTRAINT video_pkey PRIMARY KEY (id);
 
 
+ALTER TABLE ONLY topfive.top
+    ADD CONSTRAINT top_user_fkey FOREIGN KEY (user_id) REFERENCES topfive.users(id);
+
+ALTER TABLE ONLY topfive.item
+    ADD CONSTRAINT item_user_fkey FOREIGN KEY (user_id) REFERENCES topfive.users(id);
+
+ALTER TABLE ONLY topfive.rating
+    ADD CONSTRAINT rating_user_fkey FOREIGN KEY (user_id) REFERENCES topfive.users(id);
+
+ALTER TABLE ONLY topfive.user_roles
+    ADD CONSTRAINT user_roles_user_fkey FOREIGN KEY (user_id) REFERENCES topfive.users(id);
+
+ALTER TABLE ONLY topfive.user_roles
+    ADD CONSTRAINT user_roles_role_fkey FOREIGN KEY (role_id) REFERENCES topfive.role(id);
+
 --
 -- Name: top_items fk1padwwjbr7l4wke6jopb5dlfv; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
@@ -260,7 +291,6 @@ ALTER TABLE ONLY topfive.top_ratings
 
 ALTER TABLE ONLY topfive.song
     ADD CONSTRAINT fk3kr980xhy18ojchq1ekbevypy FOREIGN KEY (genre_id) REFERENCES topfive.genre(id);
-
 
 --
 -- Name: video fk3nfhh71ksu8q2i4q7gojl14q9; Type: FK CONSTRAINT; Schema: public; Owner: postgres
@@ -342,3 +372,7 @@ insert into topfive.genre (id, name) values (4, 'Classic');
 
 insert into topfive.users(id, username, password)
 values (1, 'nikitos','$2a$12$Q3/VNJ0cHKGmABkd5Mr7yON.Tlse7zWny83EfhmD0r2CGOrB27342');
+
+insert into topfive.role(id, name) values(1, 'ROLE_USER'), (2, 'ROLE_ADMIN');
+
+insert into topfive.user_roles(user_id, role_id) values (1, 1), (1,2);

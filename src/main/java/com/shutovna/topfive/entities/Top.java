@@ -27,8 +27,9 @@ public class Top {
 
     private String details;
 
-    //@NotNull
-    private String username;
+    @ManyToOne
+    @NotNull
+    private User user;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
     @JoinTable(schema = "topfive", name = "top_items",
@@ -42,12 +43,12 @@ public class Top {
     @JsonIgnore
     protected List<Rating> ratings = new ArrayList<>();
 
-    public Top(Integer id, TopType type, String title, String details, String username) {
+    public Top(Integer id, TopType type, String title, String details, User user) {
         this.id = id;
         this.type = type;
         this.title = title;
         this.details = details;
-        this.username = username;
+        this.user = user;
     }
 
     public void addItem(Item item) {
@@ -69,6 +70,7 @@ public class Top {
                 ", topType=" + type +
                 ", title='" + title + '\'' +
                 ", details='" + details + '\'' +
+                ", user='" + user.getUsername() + '\'' +
                 '}';
     }
 

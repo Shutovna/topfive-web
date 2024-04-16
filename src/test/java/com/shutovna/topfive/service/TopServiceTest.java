@@ -3,6 +3,7 @@ package com.shutovna.topfive.service;
 import com.shutovna.topfive.data.TopRepository;
 import com.shutovna.topfive.entities.Top;
 import com.shutovna.topfive.entities.TopType;
+import com.shutovna.topfive.entities.User;
 import com.shutovna.topfive.util.YamlUtil;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,13 +27,11 @@ class TopServiceTest {
     @InjectMocks
     DefaultTopService topService;
 
-    String testUsername = YamlUtil.getPropertyValue("topfive.test.username");
-
     @Test
     void findAllTops_FilterIsEmpty_ReturnsEmptyList() {
         List<Top> tops = IntStream.rangeClosed(1, 4).mapToObj(
                 value -> new Top(value, TopType.SONG, "Title %d".formatted(value),
-                        "details %d".formatted(value), testUsername)
+                        "details %d".formatted(value), new User(1))
         ).toList();
 
         doReturn(tops).when(topRepository).findAll();
@@ -49,7 +48,7 @@ class TopServiceTest {
     void findAllTops_FilterIsSet_ReturnsEmptyList() {
         List<Top> tops = IntStream.rangeClosed(1, 4).mapToObj(
                 value -> new Top(value, TopType.SONG, "Title %d".formatted(value),
-                        "details %d".formatted(value), testUsername)
+                        "details %d".formatted(value), new User(1))
         ).toList();
 
         doReturn(tops).when(topRepository).findAllByTitleLikeIgnoreCase("%title%");
@@ -65,7 +64,7 @@ class TopServiceTest {
     @Test
     void findTop_TopExists_ReturnTop() {
         Top top = new Top(1, TopType.SONG, "Title %d".formatted(1),
-                "details %d".formatted(1), testUsername);
+                "details %d".formatted(1), new User(1));
 
         doReturn(Optional.of(top)).when(topRepository).findById(1);
 
@@ -92,22 +91,22 @@ class TopServiceTest {
         // given
         var title = "Новый топ";
         var details = "Описание нового топа";
-        var username = testUsername;
+        var user = new User(1);
 
-        doReturn(new Top(1, TopType.PHOTO, title, details, username))
+        doReturn(new Top(1, TopType.PHOTO, title, details, user))
                 .when(this.topRepository).save(
                         new Top(null, TopType.PHOTO, title,
-                                details, username));
+                                details, user));
 
         // when
-        var result = this.topService.createTop(TopType.PHOTO, title, details, username);
+        var result = this.topService.createTop(TopType.PHOTO, title, details, user);
 
         // then
         assertEquals(new Top(1, TopType.PHOTO, title,
-                details, username), result);
+                details, user), result);
 
         verify(this.topRepository).save(new Top(null, TopType.PHOTO, title,
-                details, username));
+                details, user));
         verifyNoMoreInteractions(this.topRepository);
     }
 
@@ -116,8 +115,8 @@ class TopServiceTest {
         // given
         var title = "Новый топ";
         var details = "Описание нового топа";
-        var username = testUsername;
-        Top top = new Top(1, TopType.PHOTO, title, details, username);
+        var user = new User(1);
+        Top top = new Top(1, TopType.PHOTO, title, details, user);
 
         doReturn(Optional.of(top)).when(this.topRepository).findById(1);
 

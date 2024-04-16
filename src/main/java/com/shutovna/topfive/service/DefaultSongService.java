@@ -32,7 +32,7 @@ public class DefaultSongService implements SongService {
     }
 
     @Override
-    public Song createSong(NewSongPayload payload, String username) {
+    public Song createSong(NewSongPayload payload, User user) {
         ItemData itemData = new ItemData();
         itemData.setFilename(payload.getFileName());
         itemData.setContentType(payload.getType());
@@ -46,7 +46,7 @@ public class DefaultSongService implements SongService {
         song.setReleasedAt(payload.getReleasedAt());
         song.setGenre(genreRepository.findById(payload.getGenreId()).orElseThrow());
         song.setData(itemData);
-        song.setUsername(username);
+        song.setUser(user);
 
         if (payload.getTopId() != null) {
             song.addTop(topRepository.findById(payload.getTopId()).orElseThrow());

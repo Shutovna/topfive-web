@@ -3,6 +3,7 @@ package com.shutovna.topfive.service;
 import com.shutovna.topfive.data.TopRepository;
 import com.shutovna.topfive.entities.Top;
 import com.shutovna.topfive.entities.TopType;
+import com.shutovna.topfive.entities.User;
 import io.micrometer.common.util.StringUtils;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -27,12 +28,12 @@ public class DefaultTopService implements TopService {
     }
 
     @Override
-    public Top createTop(TopType topType, String title, String details, String username) {
+    public Top createTop(TopType topType, String title, String details, User user) {
         Top top = new Top();
         top.setType(topType);
         top.setTitle(title);
         top.setDetails(details);
-        top.setUsername(username);
+        top.setUser(user);
         return topRepository.save(top);
     }
 

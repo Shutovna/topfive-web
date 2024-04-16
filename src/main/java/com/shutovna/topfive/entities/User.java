@@ -1,33 +1,53 @@
 package com.shutovna.topfive.entities;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
+import jakarta.validation.constraints.NotNull;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 @Entity(name = "users")
-@Table(name = "users")
+@Table(schema = "topfive", name = "users")
 @Data
 @NoArgsConstructor
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "topfive_seq")
-    private Long id;
+    private Integer id;
 
+    @NotNull
     private String username;
+
+    @NotNull
     private String password;
 
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(schema = "topfive", name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    @NotNull
+    private List<Role> roles = new ArrayList<>();
+
+    public User(Integer id) {
+        this.id = id;
+    }
+
+    public User(Integer id, String username, String password) {
+        this.id = id;
+        this.username = username;
+        this.password = password;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("ROLE_USER"));
+        return roles.stream().map(role ->
+                        new SimpleGrantedAuthority(role.getName()))
+                .toList();
     }
 
     @Override

@@ -1,42 +1,74 @@
 package com.shutovna.topfive.controller;
 
+import com.shutovna.topfive.entities.Top;
+import com.shutovna.topfive.entities.TopType;
+import com.shutovna.topfive.entities.User;
+import com.shutovna.topfive.entities.payload.UpdateTopPayload;
+import com.shutovna.topfive.service.TopService;
+import com.shutovna.topfive.service.UserService;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
+@Transactional
 @AutoConfigureMockMvc
+@Sql("/db/tops.sql")
 class TopControllerIT {
 
     @Autowired
     MockMvc mockMvc;
+    @Autowired
+    private TopService topService;
 
-    /*@Test
+    @Autowired
+    private UserService userService;
+
+
+    @Value("${topfive.test.username}")
+    private String testUsername;
+
+    @Test
     void getTop_TopExists_ReturnsTopPage() throws Exception {
         // given
-        var requestBuilder = MockMvcRequestBuilders.get("/tops/products/1")
-                .with(user("j.dewar").roles("MANAGER"));
-       
+        var requestBuilder = MockMvcRequestBuilders.get("/tops/1")
+                .with(user(testUsername));
+
         // when
         this.mockMvc.perform(requestBuilder)
                 // then
                 .andDo(print())
                 .andExpectAll(
                         status().isOk(),
-                        view().name("tops/products/product"),
-                        model().attribute("product", new Top(1, "Товар", "Описание товара"))
+                        view().name("tops/song_top"),
+                        model().attribute("top",
+                                new Top(1, TopType.SONG, "Top 1", "Details of 1", getTestUser())
+                        )
                 );
     }
 
     @Test
     void getTop_TopDoesNotExist_ReturnsError404Page() throws Exception {
         // given
-        var requestBuilder = MockMvcRequestBuilders.get("/tops/products/1")
-                .with(user("j.dewar").roles("MANAGER"));
+        var requestBuilder = MockMvcRequestBuilders.get("/tops/123")
+                .with(user(testUsername));
 
-        WireMock.stubFor(WireMock.get("/tops-api/products/1")
-                .willReturn(WireMock.notFound()));
 
         // when
         this.mockMvc.perform(requestBuilder)
@@ -45,15 +77,15 @@ class TopControllerIT {
                 .andExpectAll(
                         status().isNotFound(),
                         view().name("errors/404"),
-                        model().attribute("error", "Товар не найден")
+                        model().attribute("error", "Топ не найден")
                 );
     }
 
     @Test
     void getTop_UserIsNotAuthorized_ReturnsForbidden() throws Exception {
         // given
-        var requestBuilder = MockMvcRequestBuilders.get("/tops/products/1")
-                .with(user("j.daniels"));
+        var requestBuilder = MockMvcRequestBuilders.get("/tops/1")
+                .with(user(testUsername).roles());
 
         // when
         this.mockMvc.perform(requestBuilder)
@@ -67,17 +99,8 @@ class TopControllerIT {
     @Test
     void getTopEditPage_TopExists_ReturnsTopEditPage() throws Exception {
         // given
-        var requestBuilder = MockMvcRequestBuilders.get("/tops/products/1/edit")
-                .with(user("j.dewar").roles("MANAGER"));
-
-        WireMock.stubFor(WireMock.get("/tops-api/products/1")
-                .willReturn(WireMock.okJson("""
-                        {
-                            "id": 1,
-                            "title": "Товар",
-                            "details": "Описание товара"
-                        }
-                        """)));
+        var requestBuilder = MockMvcRequestBuilders.get("/tops/1")
+                .with(user(testUsername));
 
         // when
         this.mockMvc.perform(requestBuilder)
@@ -85,19 +108,17 @@ class TopControllerIT {
                 .andDo(print())
                 .andExpectAll(
                         status().isOk(),
-                        view().name("tops/products/edit"),
-                        model().attribute("product", new Top(1, "Товар", "Описание товара"))
+                        view().name("tops/song_top"),
+                        model().attribute("top",
+                                new Top(1, TopType.SONG, "Top 1", "Details of 1", getTestUser()))
                 );
     }
 
     @Test
     void getTopEditPage_TopDoesNotExist_ReturnsError404Page() throws Exception {
         // given
-        var requestBuilder = MockMvcRequestBuilders.get("/tops/products/1/edit")
-                .with(user("j.dewar").roles("MANAGER"));
-
-        WireMock.stubFor(WireMock.get("/tops-api/products/1")
-                .willReturn(WireMock.notFound()));
+        var requestBuilder = MockMvcRequestBuilders.get("/tops/1234")
+                .with(user(testUsername));
 
         // when
         this.mockMvc.perform(requestBuilder)
@@ -106,15 +127,15 @@ class TopControllerIT {
                 .andExpectAll(
                         status().isNotFound(),
                         view().name("errors/404"),
-                        model().attribute("error", "Товар не найден")
+                        model().attribute("error", "Топ не найден")
                 );
     }
 
     @Test
     void getTopEditPage_UserIsNotAuthorized_ReturnsForbidden() throws Exception {
         // given
-        var requestBuilder = MockMvcRequestBuilders.get("/tops/products/1/edit")
-                .with(user("j.daniels"));
+        var requestBuilder = MockMvcRequestBuilders.get("/tops/1")
+                .with(user(testUsername).roles());
 
         // when
         this.mockMvc.perform(requestBuilder)
@@ -128,28 +149,11 @@ class TopControllerIT {
     @Test
     void updateTop_RequestIsValid_RedirectsToTopPage() throws Exception {
         // given
-        var requestBuilder = MockMvcRequestBuilders.post("/tops/products/1/edit")
+        var requestBuilder = MockMvcRequestBuilders.post("/tops/1/edit")
                 .param("title", "Новое название")
-                .param("details", "Новое описание товара")
-                .with(user("j.dewar").roles("MANAGER"))
+                .param("details", "Новое описание топа")
+                .with(user(testUsername))
                 .with(csrf());
-
-        WireMock.stubFor(WireMock.get("/tops-api/products/1")
-                .willReturn(WireMock.okJson("""
-                        {
-                            "id": 1,
-                            "title": "Товар",
-                            "details": "Описание товара"
-                        }
-                        """)));
-
-        WireMock.stubFor(WireMock.patch("/tops-api/products/1")
-                .withRequestBody(WireMock.equalToJson("""
-                        {
-                            "title": "Новое название",
-                            "details": "Новое описание товара"
-                        }"""))
-                .willReturn(WireMock.noContent()));
 
         // when
         this.mockMvc.perform(requestBuilder)
@@ -157,46 +161,23 @@ class TopControllerIT {
                 .andDo(print())
                 .andExpectAll(
                         status().is3xxRedirection(),
-                        redirectedUrl("/tops/products/1")
+                        redirectedUrl("/tops/1")
                 );
 
-        WireMock.verify(WireMock.patchRequestedFor(WireMock.urlPathMatching("/tops-api/products/1"))
-                .withRequestBody(WireMock.equalToJson("""
-                        {
-                            "title": "Новое название",
-                            "details": "Новое описание товара"
-                        }""")));
+        Top top = topService.findTop(1).orElseThrow();
+        assertEquals("Новое название", top.getTitle());
+        assertEquals("Новое описание топа", top.getDetails());
+        assertEquals(testUsername, top.getUser().getUsername());
+
     }
 
     @Test
     void updateTop_RequestIsInvalid_ReturnsTopEditPage() throws Exception {
         // given
-        var requestBuilder = MockMvcRequestBuilders.post("/tops/products/1/edit")
-                .param("title", "   ")
-                .with(user("j.dewar").roles("MANAGER"))
+        var requestBuilder = MockMvcRequestBuilders.post("/tops/1/edit")
+                .param("details", "  ")
+                .with(user(testUsername))
                 .with(csrf());
-
-        WireMock.stubFor(WireMock.get("/tops-api/products/1")
-                .willReturn(WireMock.okJson("""
-                        {
-                            "id": 1,
-                            "title": "Товар",
-                            "details": "Описание товара"
-                        }
-                        """)));
-
-        WireMock.stubFor(WireMock.patch("/tops-api/products/1")
-                .withRequestBody(WireMock.equalToJson("""
-                        {
-                            "title": "   ",
-                            "details": null
-                        }"""))
-                .willReturn(WireMock.badRequest()
-                        .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_PROBLEM_JSON_VALUE)
-                        .withBody("""
-                                {
-                                    "errors": ["Ошибка 1", "Ошибка 2"]
-                                }""")));
 
         // when
         this.mockMvc.perform(requestBuilder)
@@ -204,31 +185,22 @@ class TopControllerIT {
                 .andDo(print())
                 .andExpectAll(
                         status().isBadRequest(),
-                        view().name("tops/products/edit"),
-                        model().attribute("product", new Top(1, "Товар", "Описание товара")),
-                        model().attribute("errors", List.of("Ошибка 1", "Ошибка 2")),
-                        model().attribute("payload", new UpdateTopPayload("   ", null))
+                        view().name("tops/edit_top"),
+                        model().attribute("top",
+                                new Top(1, TopType.SONG, "Top 1", "Details of 1", getTestUser())),
+                        model().attribute("errors", List.of("Заголовок топа должен быть указан")),
+                        model().attribute("payload", new UpdateTopPayload(null, "  "))
                 );
-
-        WireMock.verify(WireMock.patchRequestedFor(WireMock.urlPathMatching("/tops-api/products/1"))
-                .withRequestBody(WireMock.equalToJson("""
-                        {
-                            "title": "   ",
-                            "details": null
-                        }""")));
     }
 
     @Test
     void updateTop_TopDoesNotExist_ReturnsError404Page() throws Exception {
         // given
-        var requestBuilder = MockMvcRequestBuilders.post("/tops/products/1/edit")
-                .param("title", "Новое название")
-                .param("details", "Новое описание товара")
-                .with(user("j.dewar").roles("MANAGER"))
+        var requestBuilder = MockMvcRequestBuilders.post("/tops/123/edit")
+                .param("title", "New title")
+                .param("details", "  ")
+                .with(user(testUsername))
                 .with(csrf());
-
-        WireMock.stubFor(WireMock.get("/tops-api/products/1")
-                .willReturn(WireMock.notFound()));
 
         // when
         this.mockMvc.perform(requestBuilder)
@@ -237,19 +209,18 @@ class TopControllerIT {
                 .andExpectAll(
                         status().isNotFound(),
                         view().name("errors/404"),
-                        model().attribute("error", "Товар не найден")
+                        model().attribute("error", "Топ не найден")
                 );
     }
 
     @Test
     void updateTop_UserIsNotAuthorized_ReturnsForbidden() throws Exception {
         // given
-        var requestBuilder = MockMvcRequestBuilders.post("/tops/products/1/edit")
-                .param("title", "Новое название")
-                .param("details", "Новое описание товара")
-                .with(user("j.daniels"))
+        var requestBuilder = MockMvcRequestBuilders.post("/tops/123/edit")
+                .param("title", "New title")
+                .param("details", "  ")
+                .with(user(testUsername).roles())
                 .with(csrf());
-
         // when
         this.mockMvc.perform(requestBuilder)
                 // then
@@ -262,21 +233,9 @@ class TopControllerIT {
     @Test
     void deleteTop_TopExists_RedirectsToTopsListPage() throws Exception {
         // given
-        var requestBuilder = MockMvcRequestBuilders.post("/tops/products/1/delete")
-                .with(user("j.dewar").roles("MANAGER"))
+        var requestBuilder = MockMvcRequestBuilders.post("/tops/1/delete")
+                .with(user(testUsername))
                 .with(csrf());
-
-        WireMock.stubFor(WireMock.get("/tops-api/products/1")
-                .willReturn(WireMock.okJson("""
-                        {
-                            "id": 1,
-                            "title": "Товар",
-                            "details": "Описание товара"
-                        }
-                        """)));
-
-        WireMock.stubFor(WireMock.delete("/tops-api/products/1")
-                .willReturn(WireMock.noContent()));
 
         // when
         this.mockMvc.perform(requestBuilder)
@@ -284,21 +243,19 @@ class TopControllerIT {
                 .andDo(print())
                 .andExpectAll(
                         status().is3xxRedirection(),
-                        redirectedUrl("/tops/products/list")
+                        redirectedUrl("/tops/table")
                 );
 
-        WireMock.verify(WireMock.deleteRequestedFor(WireMock.urlPathMatching("/tops-api/products/1")));
+        Optional<Top> top = topService.findTop(1);
+        assertTrue(top.isEmpty());
     }
 
     @Test
     void deleteTop_TopDoesNotExist_ReturnsError404Page() throws Exception {
         // given
-        var requestBuilder = MockMvcRequestBuilders.post("/tops/products/1/delete")
-                .with(user("j.dewar").roles("MANAGER"))
+        var requestBuilder = MockMvcRequestBuilders.post("/tops/123/delete")
+                .with(user(testUsername))
                 .with(csrf());
-
-        WireMock.stubFor(WireMock.get("/tops-api/products/1")
-                .willReturn(WireMock.notFound()));
 
         // when
         this.mockMvc.perform(requestBuilder)
@@ -307,15 +264,15 @@ class TopControllerIT {
                 .andExpectAll(
                         status().isNotFound(),
                         view().name("errors/404"),
-                        model().attribute("error", "Товар не найден")
+                        model().attribute("error", "Топ не найден")
                 );
     }
 
     @Test
     void deleteTop_UserIsNotAuthorized_ReturnsForbidden() throws Exception {
         // given
-        var requestBuilder = MockMvcRequestBuilders.post("/tops/products/1/delete")
-                .with(user("j.daniels"))
+        var requestBuilder = MockMvcRequestBuilders.post("/tops/1/delete")
+                .with(user(testUsername).roles())
                 .with(csrf());
 
         // when
@@ -325,5 +282,9 @@ class TopControllerIT {
                 .andExpectAll(
                         status().isForbidden()
                 );
-    }*/
+    }
+
+    private User getTestUser() {
+        return userService.loadUserByUsername(testUsername);
+    }
 }

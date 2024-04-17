@@ -7,9 +7,12 @@ import com.shutovna.topfive.entities.Song;
 import com.shutovna.topfive.entities.Top;
 import com.shutovna.topfive.entities.payload.UpdateTopPayload;
 import com.shutovna.topfive.service.TopService;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -18,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
@@ -28,7 +32,7 @@ import java.util.stream.Collectors;
 public class TopController {
     private final TopService topService;
 
-    private MessageSource messageSource;
+    private final MessageSource messageSource;
 
 
     @ModelAttribute("top")
@@ -67,11 +71,13 @@ public class TopController {
 
     @PostMapping("edit")
     public String updateTop(@ModelAttribute(binding = false) Top top, @PathVariable Integer topId,
-                            UpdateTopPayload topPayload, BindingResult bindingResult,
-                            Model model
+                            @Valid UpdateTopPayload topPayload, BindingResult bindingResult,
+                            Model model, HttpServletResponse response
     ) {
         if (bindingResult.hasErrors()) {
-            model.addAttribute("top", topPayload);
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            model.addAttribute("top", top);
+            model.addAttribute("payload", topPayload);
             model.addAttribute("errors", bindingResult.getAllErrors().stream()
                     .map(ObjectError::getDefaultMessage)
                     .toList());
@@ -87,5 +93,15 @@ public class TopController {
         topService.deleteTop(topId);
         log.info("Top {} deleted", top);
         return "redirect:/tops/table";
+    }
+
+    @ExceptionHandler(NoSuchElementException.class)
+    public String handleNoSuchElementException(NoSuchElementException exception, Model model,
+                                               HttpServletResponse response, Locale locale) {
+        response.setStatus(HttpStatus.NOT_FOUND.value());
+        model.addAttribute("error",
+                this.messageSource.getMessage(exception.getMessage(), new Object[0],
+                        exception.getMessage(), locale));
+        return "errors/404";
     }
 }

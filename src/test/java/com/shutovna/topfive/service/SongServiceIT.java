@@ -29,6 +29,7 @@ public class SongServiceIT {
         Top top = topService.findTop(1).orElseThrow();
 
         songService.deleteSong(2);
+        songService.deleteSong(3);
 
         assertTrue(top.getItems().isEmpty());
     }

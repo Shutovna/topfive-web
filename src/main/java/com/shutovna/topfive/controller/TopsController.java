@@ -46,7 +46,7 @@ public class TopsController {
     }
 
     @GetMapping("create")
-    public String showCreateTop(Model model, Principal principal) {
+    public String showCreateTop() {
         return "tops/new_top";
     }
 
@@ -55,7 +55,7 @@ public class TopsController {
                             HttpServletResponse response,
                             Principal principal) {
         if (bindingResult.hasErrors()) {
-            model.addAttribute("top", topPayload);
+            model.addAttribute("payload", topPayload);
             model.addAttribute("errors", bindingResult.getAllErrors().stream()
                     .map(ObjectError::getDefaultMessage)
                     .toList());

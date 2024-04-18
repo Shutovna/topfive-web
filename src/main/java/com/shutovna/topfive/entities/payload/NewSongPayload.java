@@ -9,8 +9,11 @@ import lombok.Data;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDate;
+import java.util.Objects;
 
 @Data
 @AllArgsConstructor
@@ -32,20 +35,26 @@ public class NewSongPayload {
 
     Integer topId;
 
-    String fileName;
-    byte[] data;
-    String type;
+    MultipartFile file;
 
-    @AssertTrue(message = "{ru.nikitos.msg.song.fileName.not_null}")
+    @AssertTrue(message = "{ru.nikitos.msg.song.file.not_null}")
     public boolean isFileSet() {
-        return !(StringUtils.isEmpty(fileName) || ArrayUtils.isEmpty(data));
+        try {
+            return file != null &&
+                    !(StringUtils.isEmpty(file.getOriginalFilename()) || ArrayUtils.isEmpty(file.getBytes()));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @AssertTrue(message = "{ru.nikitos.msg.song.type.is_audio}")
     public boolean isAudioFile() {
-        return !StringUtils.isEmpty(type) && type.startsWith("audio");
+        if (file == null) {
+            return false;
+        }
+        String contentType = file.getContentType();
+        return !StringUtils.isEmpty(contentType) && contentType.startsWith("audio");
     }
-
 
     @Override
     public String toString() {
@@ -57,8 +66,24 @@ public class NewSongPayload {
                 ", releasedAt=" + releasedAt +
                 ", genreId=" + genreId +
                 ", topId=" + topId +
-                ", fileName='" + fileName + '\'' +
-                ", topType='" + type + '\'' +
+                ", file=" + file +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof NewSongPayload)) return false;
+        NewSongPayload that = (NewSongPayload) o;
+        return Objects.equals(artist, that.artist) && Objects.equals(title, that.title)
+                && Objects.equals(description, that.description) && Objects.equals(bitRate, that.bitRate)
+                && Objects.equals(releasedAt, that.releasedAt) && Objects.equals(genreId, that.genreId)
+                && Objects.equals(topId, that.topId)
+                && Objects.equals(file.getOriginalFilename(), that.getFile().getOriginalFilename());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(artist, title, description, bitRate, releasedAt, genreId, topId, file.getOriginalFilename());
     }
 }

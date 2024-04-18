@@ -48,7 +48,7 @@ public class Song extends Item {
                 ", title='" + title + '\'' +
                 ", data='" + data + '\'' +
                 ", description='" + description + '\'' +
-                ", username='" + getUser().getUsername() + '\'' +
+                ", username='" + user + '\'' +
                 '}';
     }
 

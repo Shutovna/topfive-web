@@ -20,13 +20,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class FileStorageServiceTest {
-    private final String fileStoreDir = YamlUtil.getPropertyValue("topfive.file.store.dir");;
+    private final String fileStoreDir = YamlUtil.getPropertyValue("topfive.file.store.dir");
+    ;
 
     @Mock
     ItemRepository itemRepository;
@@ -100,6 +100,14 @@ class FileStorageServiceTest {
 
         byte[] fileData = FileCopyUtils.copyToByteArray(getOutFile(filename));
         assertArrayEquals(data, fileData);
+    }
+
+    @Test
+    void createItemDataFile_fileNameIsNull_ThrowNullPointer() throws IOException {
+        byte[] data = "This is simple data".getBytes();
+        String filename = null;
+
+        assertThrows(NullPointerException.class, () -> itemService.createItemDataFile(filename, data));
     }
 
     private File getOutFile(String filename) {

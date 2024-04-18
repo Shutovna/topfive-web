@@ -8,7 +8,7 @@
     <link rel="stylesheet" th:href="@{/styles.css}"></link>
 </head>
 <body class="container">
-<a data-th-href="@{/tops/{topId}(topId=${topId})}">К топу</a>
+<a data-th-href="@{/tops/{topId}(topId=${payload != null ? payload.topId : topId})}">К топу</a>
 <h1>Добавление песни</h1>
 <div data-th-if="${errors}">
     <h2>Допущены ошибки</h2>
@@ -18,7 +18,8 @@
 </div>
 
 <form enctype="multipart/form-data" data-th-action="@{/songs/create}" method="POST">
-    <input type="hidden" data-th-name="topId" data-th-value="${topId}">
+    <input type="hidden" data-th-name="previousPage" data-th-value="${previousPage}">
+    <input type="hidden" data-th-name="topId" data-th-value="${payload != null ? payload.topId : topId}">
     <label>
         Исполнитель:<br>
         <input type="text" name="artist" data-th-value="${payload?.artist}">

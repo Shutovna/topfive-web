@@ -7,6 +7,7 @@ import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.thymeleaf.util.StringUtils;
 
 import java.io.*;
 import java.util.NoSuchElementException;
@@ -49,7 +50,7 @@ public class DefaultFileStorageService implements FileStorageService {
         }
         File file = new File(dir, filename);
         try {
-            log.debug("Getting item data from {}" , file);
+            log.debug("Getting item data from {}", file);
             return new FileInputStream(file);
 
         } catch (FileNotFoundException e) {
@@ -75,6 +76,9 @@ public class DefaultFileStorageService implements FileStorageService {
 
     @Override
     public File createItemDataFile(String filename, byte[] data) {
+        if (StringUtils.isEmpty(filename)) {
+            throw new NullPointerException("filename is null");
+        }
         File dir = new File(fileStoreDir);
         if (!dir.exists()) {
             if (!dir.mkdirs()) {

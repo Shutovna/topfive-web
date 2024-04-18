@@ -1,5 +1,6 @@
 package com.shutovna.topfive.controller;
 
+import com.shutovna.topfive.controller.util.WebUtil;
 import com.shutovna.topfive.entities.Song;
 import com.shutovna.topfive.entities.payload.UpdateSongPayload;
 import com.shutovna.topfive.service.GenreService;
@@ -34,7 +35,7 @@ public class SongController {
     @GetMapping
     public String editSong(@ModelAttribute Song song, Model model, HttpServletRequest request) {
         log.debug("Editing {}", song);
-        model.addAttribute("previousPage", getPreviousPageByRequest(request));
+        model.addAttribute("previousPage", WebUtil.getPreviousPageByRequest(request));
         model.addAttribute("genres", genreService.findGenres());
         return "songs/edit_song";
     }
@@ -64,10 +65,5 @@ public class SongController {
                              Model model) {
         songService.deleteSong(songId);
         return "redirect:" + previousPage;
-    }
-
-    protected String getPreviousPageByRequest(HttpServletRequest request) {
-        String referer = request.getHeader("Referer");
-        return StringUtils.isEmpty(referer) ? "/" : referer;
     }
 }

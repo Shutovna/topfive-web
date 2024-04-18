@@ -20,11 +20,11 @@
 <form data-th-action="@{/tops/create}" method="POST">
     <label>
         Название:<br>
-        <input type="text" name="title" data-th-value="${top?.title}">
+        <input type="text" name="title" data-th-value="${payload?.title}">
     </label><br>
     <label>
         Описание:<br>
-        <textarea name="details" data-th-text="${top?.details}"></textarea>
+        <textarea name="details" data-th-text="${payload?.details}"></textarea>
     </label><br>
 
     <label>Выберите тип топа:<br>

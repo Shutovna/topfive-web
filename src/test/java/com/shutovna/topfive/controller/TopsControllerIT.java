@@ -52,7 +52,7 @@ class TopsControllerIT {
         // given
         var requestBuilder = MockMvcRequestBuilders.get("/tops/table")
                 .queryParam("filter", "top")
-                .with(user(testUsername).roles("USER"));
+                .with(user(testUsername));
 
         // when
         this.mockMvc.perform(requestBuilder)
@@ -90,7 +90,7 @@ class TopsControllerIT {
     void getNewTopPage_ReturnsTopPage() throws Exception {
         // given
         var requestBuilder = MockMvcRequestBuilders.get("/tops/create")
-                .with(user(testUsername).roles("USER"));
+                .with(user(testUsername));
 
         // when
         this.mockMvc.perform(requestBuilder)
@@ -118,6 +118,7 @@ class TopsControllerIT {
     }
 
     @Test
+    @Sql("/db/tops.sql")
     void createTop_RequestIsValid_RedirectsToTopPage() throws Exception {
         // given
         var requestBuilder = MockMvcRequestBuilders.post("/tops/create")
@@ -160,7 +161,7 @@ class TopsControllerIT {
                 .andExpectAll(
                         status().isBadRequest(),
                         view().name("tops/new_top"),
-                        model.attribute("top", new NewTopPayload("   ", null, null)),
+                        model.attribute("payload", new NewTopPayload("   ", null, null)),
                         model.attribute("errors",
                                 Matchers.containsInAnyOrder(
                                         "Заголовок топа должен быть указан",

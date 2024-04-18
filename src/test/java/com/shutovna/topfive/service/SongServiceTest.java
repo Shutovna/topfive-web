@@ -3,6 +3,7 @@ package com.shutovna.topfive.service;
 import com.shutovna.topfive.data.GenreRepository;
 import com.shutovna.topfive.data.SongRepository;
 import com.shutovna.topfive.data.TopRepository;
+import com.shutovna.topfive.data.UserRepository;
 import com.shutovna.topfive.entities.*;
 import com.shutovna.topfive.entities.payload.NewSongPayload;
 import com.shutovna.topfive.entities.payload.UpdateSongPayload;
@@ -12,6 +13,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
 import java.time.LocalDate;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -33,10 +35,15 @@ public class SongServiceTest {
     GenreRepository genreRepository;
 
     @Mock
+    UserRepository userRepository;
+
+    @Mock
     FileStorageService fileStorageService;
 
     @InjectMocks
     DefaultSongService songService;
+
+    private final String testUsername = YamlUtil.getPropertyValue("topfive.test.username");;
 
     @Test
     public void findAllSongs_ReturnsSongList() {
@@ -107,12 +114,12 @@ public class SongServiceTest {
         ).when(songRepository).save(song);
 
         doReturn(Optional.of(new Genre(1, "Metall"))).when(genreRepository).findById(1);
+        doReturn(Optional.of(new User(1, testUsername, null))).when(userRepository).findById(1);
 
         // when
         Song result = songService.createSong(
-                new NewSongPayload(artist, title, description, bitRate, releasedAt, genreId,
-                        topId, filename, data, contentType),
-                new User(1));
+                artist, title, description, bitRate, releasedAt, genreId,
+                topId, filename, data, contentType, 1);
 
         // then
         assertEquals(new Song(songId, title, description,

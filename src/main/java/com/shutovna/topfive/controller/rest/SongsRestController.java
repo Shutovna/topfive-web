@@ -21,7 +21,6 @@ import java.util.List;
 @Slf4j
 public class SongsRestController {
     private final SongService songService;
-    private final GenreService genreService;
 
     @RequestMapping(value = "findAll", method = RequestMethod.GET, produces = MimeTypeUtils.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> findSongs() {

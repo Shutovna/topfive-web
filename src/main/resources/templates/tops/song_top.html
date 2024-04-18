@@ -45,7 +45,6 @@
         <td data-th-text="${row.item.genre?.name}"></td>
         <td>
             <audio controls th:src="${row.url}"></audio>
-            <a th:href="${row.url}" th:text="${row.item.data.filename}"></a>
         </td>
     </tr>
     </tbody>

@@ -3,6 +3,7 @@ package com.shutovna.topfive.entities;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -35,6 +36,7 @@ public class Top {
     @JoinTable(schema = "topfive", name = "top_items",
             joinColumns = @JoinColumn(name = "top_id"),
             inverseJoinColumns = @JoinColumn(name = "item_id"))
+    @Size(max = 5)
     private Set<Item> items = new HashSet<>();
 
 

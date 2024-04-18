@@ -1,12 +1,17 @@
 package com.shutovna.topfive.data;
 
 import com.shutovna.topfive.entities.*;
-import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.BeanPropertyBindingResult;
+import org.springframework.validation.Errors;
+
+import java.time.LocalDate;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -106,5 +111,33 @@ public class TopTest {
         top.removeItem(song);
         assertTrue(top.getItems().isEmpty());
         assertTrue(song.getTops().isEmpty());
+    }
+
+    @Test
+    public void testMax5ItemsInTop() {
+        Top top = new Top(null, TopType.SONG, "newTitle", "newDetails", getTestUser());
+        for (int i = 0; i < 5; i++) {
+            top.addItem(songRepository.save(getTestSong()));
+        }
+
+        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+        Validator validator = factory.getValidator();
+        Set<ConstraintViolation<Top>> violations = validator.validate(top);
+        assertTrue(violations.isEmpty());
+
+        top = topRepository.saveAndFlush(top);
+
+        top.addItem(songRepository.save(getTestSong()));
+        violations = validator.validate(top);
+        assertEquals("размер должен находиться в диапазоне от 0 до 5", violations.iterator().next().getMessage());
+
+    }
+
+    private Song getTestSong() {
+        return new Song(null, "Unforgiven", "Cool song",
+                new ItemData("Unforgiven.mp3", "audio/mpeg"),
+                getTestUser(), "Metallica",
+                LocalDate.of(1990, 11, 29),
+                192, new Genre(1));
     }
 }

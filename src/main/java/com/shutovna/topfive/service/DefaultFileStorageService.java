@@ -19,7 +19,6 @@ public class DefaultFileStorageService implements FileStorageService {
 
     private final ItemRepository itemRepository;
 
-
     private String fileStoreDir;
 
     public DefaultFileStorageService(ItemRepository itemRepository, @Value("${topfive.file.store.dir}") String fileStoreDir) {

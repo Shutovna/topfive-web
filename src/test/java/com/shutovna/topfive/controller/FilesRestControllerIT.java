@@ -58,7 +58,7 @@ public class FilesRestControllerIT {
 
 
     @Test
-    @Sql("/db/songs.sql")
+    @Sql({"/db/tops.sql", "/db/songs.sql"})
     public void downloadFile_ReturnsStream() throws Exception {
         //given
         var requestBuilder = MockMvcRequestBuilders.get("/files/" + filename)

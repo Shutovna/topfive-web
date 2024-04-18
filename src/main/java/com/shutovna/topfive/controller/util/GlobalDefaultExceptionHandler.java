@@ -1,4 +1,4 @@
-package com.shutovna.topfive.controller;
+package com.shutovna.topfive.controller.util;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

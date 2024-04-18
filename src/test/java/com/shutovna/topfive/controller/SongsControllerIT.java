@@ -59,7 +59,7 @@ class SongsControllerIT {
     private Resource exampleFile;
 
     @Test
-    @Sql("/db/songs.sql")
+    @Sql({"/db/tops.sql", "/db/songs.sql"})
     void getSongList_ReturnsSongsListPage() throws Exception {
         // given
         var requestBuilder = MockMvcRequestBuilders.get("/songs/table")

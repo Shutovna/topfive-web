@@ -21,7 +21,7 @@ public class SongServiceIT {
     TopService topService;
 
     @Test
-    @Sql("/db/songs.sql")
+    @Sql({"/db/tops.sql", "/db/songs.sql"})
     public void deleteSong_SongIsDeleted() {
         Song song = songService.findSong(2).orElseThrow();
         assertFalse(song.getTops().isEmpty());

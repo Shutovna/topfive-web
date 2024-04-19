@@ -1,9 +1,11 @@
 package com.shutovna.topfive.service;
 
 import com.shutovna.topfive.data.ItemRepository;
+import com.shutovna.topfive.entities.Item;
 import com.shutovna.topfive.entities.payload.DownloadItemDataPayload;
 import com.shutovna.topfive.entities.ItemData;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -15,17 +17,13 @@ import java.util.NoSuchElementException;
 @Service
 @Transactional
 @Slf4j
+@RequiredArgsConstructor
 public class DefaultFileStorageService implements FileStorageService {
 
-    private final ItemRepository itemRepository;
+    private final ItemRepository<Item> itemRepository;
 
+    @Value("${topfive.file.store.dir}")
     private String fileStoreDir;
-
-    public DefaultFileStorageService(ItemRepository itemRepository, @Value("${topfive.file.store.dir}") String fileStoreDir) {
-        this.itemRepository = itemRepository;
-        this.fileStoreDir = fileStoreDir;
-    }
-
 
     @Override
     public DownloadItemDataPayload getItemDataPayload(Integer itemId) {

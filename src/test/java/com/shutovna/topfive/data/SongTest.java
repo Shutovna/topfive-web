@@ -6,7 +6,6 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.validation.ConstraintViolationException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,7 +25,7 @@ public class SongTest {
     @PersistenceContext
     private EntityManager entityManager;
     @Autowired
-    private SongRepository songRepository;
+    private ItemRepository<Song> itemRepository;
 
     @Autowired
     private TopRepository topRepository;
@@ -63,7 +62,7 @@ public class SongTest {
         Genre genre = genreRepository.findByName("Metall");
 
         Song song = getSong();
-        song = songRepository.save(song);
+        song = itemRepository.save(song);
 
         Song song2 = new Song();
         song2.setArtist("Iron Maiden");
@@ -74,12 +73,12 @@ public class SongTest {
         song2.setReleasedAt(null);
         song.setBitRate(312);
         song2.setUser(getTestUser());
-        song2 = songRepository.save(song2);
+        song2 = itemRepository.save(song2);
 
-        List<Song> all = songRepository.findAll();
+        List<Song> all = itemRepository.findAll();
         assertEquals(2, all.size());
 
-        Song songDb = songRepository.findById(song.getId()).orElseThrow();
+        Song songDb = itemRepository.findById(song.getId()).orElseThrow();
 
         assertTrue(songDb.getId() >= 1000);
         assertEquals("Metallica", songDb.getArtist());
@@ -94,7 +93,7 @@ public class SongTest {
         assertEquals("nikitos", songDb.getUser().getUsername());
         assertTrue(songDb.getRatings().isEmpty());
 
-        Song songDb2 = songRepository.findById(song2.getId()).orElseThrow();
+        Song songDb2 = itemRepository.findById(song2.getId()).orElseThrow();
         assertTrue(songDb2.getId() > 1000);
         assertEquals("Iron Maiden", songDb2.getArtist());
         assertEquals("Number of the beast", songDb2.getTitle());
@@ -108,7 +107,7 @@ public class SongTest {
     public void testUpdate() {
         LocalDate releasedAt = LocalDate.now();
         Song song = getSong();
-        song = songRepository.saveAndFlush(song);
+        song = itemRepository.saveAndFlush(song);
 
         song.setArtist("newArtist");
         song.setTitle("newTitle");
@@ -121,7 +120,7 @@ public class SongTest {
         releasedAt = releasedAt.plusDays(1);
         song.setReleasedAt(releasedAt);
 
-        Song songDB = songRepository.saveAndFlush(song);
+        Song songDB = itemRepository.saveAndFlush(song);
         assertEquals("newArtist", songDB.getArtist());
         assertEquals("newTitle", songDB.getTitle());
         assertEquals("newDescription", songDB.getDescription());
@@ -139,7 +138,7 @@ public class SongTest {
     public void testFailsWhenEmptySong() {
         Exception exception = assertThrows(ConstraintViolationException.class, () -> {
             Song song = new Song();
-            songRepository.saveAndFlush(song);
+            itemRepository.saveAndFlush(song);
         });
         String expectedMessage = "Validation failed for classes";
         String actualMessage = exception.getMessage();
@@ -156,7 +155,7 @@ public class SongTest {
             song.setTitle("Unforgiven");
             song.setDescription("testDescription");
             song.setGenre(genre);
-            songRepository.saveAndFlush(song);
+            itemRepository.saveAndFlush(song);
         });
 
         String expectedMessage = "Validation failed for classes";
@@ -172,13 +171,13 @@ public class SongTest {
         song.addTop(top);
 
         top = topRepository.saveAndFlush(top);
-        song = songRepository.saveAndFlush(song);
+        song = itemRepository.saveAndFlush(song);
 
         song.removeTop(top);
-        songRepository.deleteById(song.getId());
-        songRepository.flush();
+        itemRepository.deleteById(song.getId());
+        itemRepository.flush();
 
-        Optional<Song> songDB = songRepository.findById(song.getId());
+        Optional<Song> songDB = itemRepository.findById(song.getId());
         assertTrue(songDB.isEmpty());
 
         Optional<Top> topDB = topRepository.findById(top.getId());

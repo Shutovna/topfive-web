@@ -1,11 +1,10 @@
 package com.shutovna.topfive.service;
 
 import com.shutovna.topfive.data.GenreRepository;
-import com.shutovna.topfive.data.SongRepository;
+import com.shutovna.topfive.data.ItemRepository;
 import com.shutovna.topfive.data.TopRepository;
 import com.shutovna.topfive.data.UserRepository;
 import com.shutovna.topfive.entities.*;
-import com.shutovna.topfive.entities.payload.NewSongPayload;
 import com.shutovna.topfive.entities.payload.UpdateSongPayload;
 import com.shutovna.topfive.util.YamlUtil;
 import org.junit.jupiter.api.Test;
@@ -26,7 +25,7 @@ public class SongServiceTest {
     TopRepository topRepository;
 
     @Mock
-    SongRepository songRepository;
+    ItemRepository<Item> itemRepository;
 
     @Mock
     GenreRepository genreRepository;
@@ -40,7 +39,7 @@ public class SongServiceTest {
     @InjectMocks
     DefaultSongService songService;
 
-    private final String testUsername = YamlUtil.getPropertyValue("topfive.test.username");;
+    private final String testUsername = YamlUtil.getPropertyValue("topfive.test.username");
 
     @Test
     public void findAllSongs_ReturnsSongList() {
@@ -49,15 +48,15 @@ public class SongServiceTest {
                 new ItemData("file.mp3", "audio/mpeg"),
                 new User(1), "artist", LocalDate.now(), 192, null);
         List<Song> songsList = List.of(song);
-        doReturn(songsList).when(songRepository).findAll();
+        doReturn(songsList).when(itemRepository).findAll();
 
         // when
         List<Song> result = songService.findAllSongs();
 
         // then
         assertEquals(songsList, result);
-        verify(songRepository).findAll();
-        verifyNoMoreInteractions(songRepository);
+        verify(itemRepository).findAll();
+        verifyNoMoreInteractions(itemRepository);
         verifyNoMoreInteractions(topRepository);
         verifyNoMoreInteractions(fileStorageService);
     }
@@ -68,15 +67,15 @@ public class SongServiceTest {
         Song song = new Song(1, "tille", null,
                 new ItemData("file.mp3", "audio/mpeg"),
                 new User(1), "artist", LocalDate.now(), 192, null);
-        doReturn(Optional.of(song)).when(songRepository).findById(1);
+        doReturn(Optional.of(song)).when(itemRepository).findById(1);
 
         // when
         Optional<Song> result = songService.findSong(1);
 
         // then
         assertEquals(song, result.orElseThrow());
-        verify(songRepository).findById(1);
-        verifyNoMoreInteractions(songRepository);
+        verify(itemRepository).findById(1);
+        verifyNoMoreInteractions(itemRepository);
         verifyNoMoreInteractions(topRepository);
         verifyNoMoreInteractions(fileStorageService);
     }
@@ -86,6 +85,7 @@ public class SongServiceTest {
         // given
         int topId = 1;
         int songId = 2;
+        int userId = 1;
         String title = "tille";
         String description = "desc";
         String filename = "file.mp3";
@@ -108,10 +108,10 @@ public class SongServiceTest {
         doReturn(new Song(songId, title, description,
                 new ItemData(filename, contentType),
                 new User(1), artist, releasedAt, bitRate, genre)
-        ).when(songRepository).save(song);
+        ).when(itemRepository).save(song);
 
-        doReturn(Optional.of(new Genre(1, "Metall"))).when(genreRepository).findById(1);
-        doReturn(Optional.of(new User(1, testUsername, null))).when(userRepository).findById(1);
+        doReturn(new Genre(1, null)).when(genreRepository).getReferenceById(genreId);
+        doReturn(new User(1, testUsername, null)).when(userRepository).getReferenceById(userId);
 
         // when
         Song result = songService.createSong(
@@ -123,10 +123,12 @@ public class SongServiceTest {
                         new ItemData(filename, contentType),
                         new User(1), artist, releasedAt, bitRate, genre),
                 result);
-        verify(songRepository).save(song);
-        verify(genreRepository).findById(genreId);
+        verify(itemRepository).save(song);
+        verify(userRepository).getReferenceById(userId);
+        verify(genreRepository).getReferenceById(genreId);
         verify(fileStorageService).createItemDataFile(filename, data);
-        verifyNoMoreInteractions(songRepository);
+        verifyNoMoreInteractions(itemRepository);
+        verifyNoMoreInteractions(userRepository);
         verifyNoMoreInteractions(topRepository);
         verifyNoMoreInteractions(genreRepository);
         verifyNoMoreInteractions(fileStorageService);
@@ -148,7 +150,7 @@ public class SongServiceTest {
         doReturn(Optional.of(new Song(songId, title, description,
                 new ItemData(filename, contentType),
                 new User(1), artist, releasedAt, bitRate, new Genre(genreId)))
-        ).when(songRepository).findById(songId);
+        ).when(itemRepository).findById(songId);
 
         doReturn(Optional.of(new Genre(genreId, "Metall"))).when(genreRepository).findById(1);
 
@@ -156,9 +158,9 @@ public class SongServiceTest {
         songService.updateSong(songId, new UpdateSongPayload(artist, title, description, bitRate, releasedAt, genreId));
 
         // then
-        verify(songRepository).findById(songId);
+        verify(itemRepository).findById(songId);
         verify(genreRepository).findById(genreId);
-        verifyNoMoreInteractions(songRepository);
+        verifyNoMoreInteractions(itemRepository);
         verifyNoMoreInteractions(topRepository);
         verifyNoMoreInteractions(genreRepository);
         verifyNoMoreInteractions(fileStorageService);
@@ -175,15 +177,15 @@ public class SongServiceTest {
         LocalDate releasedAt = LocalDate.now();
         Integer genreId = 1;
 
-        doReturn(Optional.empty()).when(songRepository).findById(songId);
+        doReturn(Optional.empty()).when(itemRepository).findById(songId);
 
         // when
         assertThrows(NoSuchElementException.class, () ->
                 songService.updateSong(songId, new UpdateSongPayload(artist, title, description, bitRate, releasedAt, genreId)));
 
         // then
-        verify(songRepository).findById(songId);
-        verifyNoMoreInteractions(songRepository);
+        verify(itemRepository).findById(songId);
+        verifyNoMoreInteractions(itemRepository);
         verifyNoMoreInteractions(topRepository);
         verifyNoMoreInteractions(fileStorageService);
     }
@@ -204,15 +206,15 @@ public class SongServiceTest {
         Song song = new Song(songId, title, description,
                 new ItemData(filename, contentType),
                 new User(1), artist, releasedAt, bitRate, new Genre(genreId));
-        doReturn(Optional.of(song)).when(songRepository).findById(songId);
+        doReturn(Optional.of(song)).when(itemRepository).findById(songId);
 
         //when
         this.songService.deleteSong(songId);
 
         //then
-        verify(songRepository).findById(songId);
-        verify(songRepository).delete(song);
-        verifyNoMoreInteractions(songRepository);
+        verify(itemRepository).findById(songId);
+        verify(itemRepository).delete(song);
+        verifyNoMoreInteractions(itemRepository);
         verifyNoMoreInteractions(topRepository);
         verifyNoMoreInteractions(fileStorageService);
     }
@@ -235,7 +237,7 @@ public class SongServiceTest {
         Song song = new Song(songId, title, description,
                 new ItemData(filename, contentType),
                 new User(1), artist, releasedAt, bitRate, new Genre(genreId));
-        doReturn(Optional.of(song)).when(songRepository).findById(songId);
+        doReturn(Optional.of(song)).when(itemRepository).findById(songId);
 
         Top top = new Top(topId, TopType.SONG, "Title %d".formatted(topId),
                 "details %d".formatted(topId), new User(1));
@@ -248,9 +250,9 @@ public class SongServiceTest {
         Iterator<Item> iterator = top.getItems().iterator();
         assertEquals(song, iterator.next());
         assertFalse(iterator.hasNext());
-        verify(songRepository).findById(songId);
+        verify(itemRepository).findById(songId);
         verify(topRepository).findById(topId);
-        verifyNoMoreInteractions(songRepository);
+        verifyNoMoreInteractions(itemRepository);
         verifyNoMoreInteractions(topRepository);
 
     }
@@ -272,7 +274,7 @@ public class SongServiceTest {
         Song song = new Song(songId, title, description,
                 new ItemData(filename, contentType),
                 new User(1), artist, releasedAt, bitRate, new Genre(genreId));
-        doReturn(Optional.of(song)).when(songRepository).findById(songId);
+        doReturn(Optional.of(song)).when(itemRepository).findById(songId);
 
         doReturn(Optional.empty()).when(topRepository).findById(topId);
 
@@ -280,9 +282,9 @@ public class SongServiceTest {
         assertThrows(NoSuchElementException.class, () -> this.songService.addToTop(topId, songId));
 
         //then
-        verify(songRepository).findById(songId);
+        verify(itemRepository).findById(songId);
         verify(topRepository).findById(topId);
-        verifyNoMoreInteractions(songRepository);
+        verifyNoMoreInteractions(itemRepository);
         verifyNoMoreInteractions(topRepository);
 
     }
@@ -293,13 +295,13 @@ public class SongServiceTest {
         int topId = 1;
         int songId = 213;
 
-        doReturn(Optional.empty()).when(songRepository).findById(songId);
+        doReturn(Optional.empty()).when(itemRepository).findById(songId);
         //when
         assertThrows(NoSuchElementException.class, () -> this.songService.addToTop(topId, songId));
 
         //then
-        verify(songRepository).findById(songId);
-        verifyNoMoreInteractions(songRepository);
+        verify(itemRepository).findById(songId);
+        verifyNoMoreInteractions(itemRepository);
         verifyNoMoreInteractions(topRepository);
     }
 }

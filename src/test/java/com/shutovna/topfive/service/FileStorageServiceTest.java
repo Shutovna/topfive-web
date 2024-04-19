@@ -1,6 +1,7 @@
 package com.shutovna.topfive.service;
 
 import com.shutovna.topfive.data.ItemRepository;
+import com.shutovna.topfive.entities.Item;
 import com.shutovna.topfive.entities.User;
 import com.shutovna.topfive.entities.payload.DownloadItemDataPayload;
 import com.shutovna.topfive.entities.ItemData;
@@ -26,10 +27,9 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class FileStorageServiceTest {
     private final String fileStoreDir = YamlUtil.getPropertyValue("topfive.file.store.dir");
-    ;
 
     @Mock
-    ItemRepository itemRepository;
+    ItemRepository<Item> itemRepository;
 
     @InjectMocks
     DefaultFileStorageService itemService;

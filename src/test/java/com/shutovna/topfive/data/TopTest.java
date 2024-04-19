@@ -7,8 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.BeanPropertyBindingResult;
-import org.springframework.validation.Errors;
 
 import java.time.LocalDate;
 import java.util.Set;
@@ -23,7 +21,7 @@ public class TopTest {
     TopRepository topRepository;
 
     @Autowired
-    SongRepository songRepository;
+    ItemRepository<Item> itemRepository;
 
     @Autowired
     private UserRepository userRepository;
@@ -117,7 +115,7 @@ public class TopTest {
     public void testMax5ItemsInTop() {
         Top top = new Top(null, TopType.SONG, "newTitle", "newDetails", getTestUser());
         for (int i = 0; i < 5; i++) {
-            top.addItem(songRepository.save(getTestSong()));
+            top.addItem(itemRepository.save(getTestSong()));
         }
 
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
@@ -127,7 +125,7 @@ public class TopTest {
 
         top = topRepository.saveAndFlush(top);
 
-        top.addItem(songRepository.save(getTestSong()));
+        top.addItem(itemRepository.save(getTestSong()));
         violations = validator.validate(top);
         assertEquals("размер должен находиться в диапазоне от 0 до 5", violations.iterator().next().getMessage());
 

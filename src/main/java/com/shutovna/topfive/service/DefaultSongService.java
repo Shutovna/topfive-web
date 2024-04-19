@@ -1,11 +1,10 @@
 package com.shutovna.topfive.service;
 
 import com.shutovna.topfive.data.GenreRepository;
-import com.shutovna.topfive.data.SongRepository;
+import com.shutovna.topfive.data.ItemRepository;
 import com.shutovna.topfive.data.TopRepository;
 import com.shutovna.topfive.data.UserRepository;
 import com.shutovna.topfive.entities.*;
-import com.shutovna.topfive.entities.payload.NewSongPayload;
 import com.shutovna.topfive.entities.payload.UpdateSongPayload;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +20,7 @@ import java.util.Optional;
 @Transactional
 @RequiredArgsConstructor
 public class DefaultSongService implements SongService {
-    private final SongRepository songRepository;
+    private final ItemRepository<Song> itemRepository;
 
     private final TopRepository topRepository;
 
@@ -33,7 +32,7 @@ public class DefaultSongService implements SongService {
 
     @Override
     public List<Song> findAllSongs() {
-        return songRepository.findAll();
+        return itemRepository.findAll();
     }
 
     @Override
@@ -50,25 +49,25 @@ public class DefaultSongService implements SongService {
         song.setDescription(description);
         song.setBitRate(bitRate);
         song.setReleasedAt(releasedAt);
-        song.setGenre(genreRepository.findById(genreId).orElseThrow());
+        song.setGenre(genreRepository.getReferenceById(genreId));
         song.setData(itemData);
-        song.setUser(userRepository.findById(userId).orElseThrow());
+        song.setUser(userRepository.getReferenceById(userId));
 
         if (topId != null) {
             song.addTop(topRepository.findById(topId).orElseThrow());
         }
 
-        return songRepository.save(song);
+        return itemRepository.save(song);
     }
 
     @Override
     public Optional<Song> findSong(Integer songId) {
-        return songRepository.findById(songId);
+        return itemRepository.findById(songId);
     }
 
     @Override
     public void updateSong(Integer songId, UpdateSongPayload payload) {
-        Song song = songRepository.findById(songId).orElseThrow(NoSuchElementException::new);
+        Song song = itemRepository.findById(songId).orElseThrow(NoSuchElementException::new);
         song.setArtist(payload.getArtist());
         song.setTitle(payload.getTitle());
         song.setDescription(payload.getDescription());
@@ -79,25 +78,25 @@ public class DefaultSongService implements SongService {
 
     @Override
     public void deleteSong(Integer songId) {
-        Optional<Song> song = songRepository.findById(songId);
+        Optional<Song> song = itemRepository.findById(songId);
         if (song.isPresent()) {
             for (Top top : new ArrayList<>(song.get().getTops())) {
                 song.get().removeTop(top);
             }
-            songRepository.delete(song.get());
+            itemRepository.delete(song.get());
         }
     }
 
     @Override
     public void addToTop(Integer topId, Integer songId) {
-        Song song = songRepository.findById(songId).orElseThrow(NoSuchElementException::new);
+        Song song = itemRepository.findById(songId).orElseThrow(NoSuchElementException::new);
         Top top = topRepository.findById(topId).orElseThrow(NoSuchElementException::new);
         top.addItem(song);
     }
 
     @Override
     public void removeFromTop(Integer topId, Integer songId) {
-        Song song = songRepository.findById(songId).orElseThrow(NoSuchElementException::new);
+        Song song = itemRepository.findById(songId).orElseThrow(NoSuchElementException::new);
         Top top = topRepository.findById(topId).orElseThrow(NoSuchElementException::new);
         top.removeItem(song);
     }

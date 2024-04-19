@@ -55,7 +55,7 @@ public class SongsController {
     public String createSong(@Valid NewSongPayload songPayload,
                              BindingResult bindingResult,
                              @ModelAttribute("previousPage") String previousPage,
-                             Model model, Principal principal, HttpServletResponse response) {
+                             Model model, Principal principal, HttpServletResponse response) throws IOException {
         log.debug("Creating " + songPayload);
 
         if (bindingResult.hasErrors()) {
@@ -70,16 +70,10 @@ public class SongsController {
 
         MultipartFile file = songPayload.getFile();
         log.debug("MultipartFile: " + file);
-        byte[] data;
-        try {
-            data = file.getBytes();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
         User user = userService.loadUserByUsername(principal.getName());
         songService.createSong(songPayload.getArtist(), songPayload.getTitle(), songPayload.getDescription(),
                 songPayload.getBitRate(), songPayload.getReleasedAt(), songPayload.getGenreId(),
-                songPayload.getTopId(), file.getOriginalFilename(), data, file.getContentType(), user.getId());
+                songPayload.getTopId(), file.getOriginalFilename(), file.getBytes(), file.getContentType(), user.getId());
         return "redirect:" + previousPage;
     }
 }

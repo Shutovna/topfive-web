@@ -1,11 +1,8 @@
 package com.shutovna.topfive.controller;
 
-import com.shutovna.topfive.data.GenreRepository;
-import com.shutovna.topfive.data.SongRepository;
+import com.shutovna.topfive.data.ItemRepository;
 import com.shutovna.topfive.data.TopRepository;
 import com.shutovna.topfive.entities.*;
-import com.shutovna.topfive.service.SongService;
-import com.shutovna.topfive.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -30,7 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Sql({"/db/tops.sql"})
 public class SongSelectControllerIT {
     @Autowired
-    private SongRepository songRepository;
+    private ItemRepository<Song> itemRepository;
 
     @Autowired
     private TopRepository topRepository;
@@ -61,7 +58,7 @@ public class SongSelectControllerIT {
     @Test
     void addSongToTop_SongAddedTopTop_ReturnsRedirectToTop() throws Exception {
         // given
-        Song song = songRepository.save(getTestSong());
+        Song song = itemRepository.save(getTestSong());
 
         var requestBuilder = MockMvcRequestBuilders.post("/songs/select")
                 .param("topId", "1")

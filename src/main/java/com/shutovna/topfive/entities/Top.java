@@ -32,7 +32,7 @@ public class Top {
     @NotNull
     private User user;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+    @ManyToMany(cascade = CascadeType.PERSIST)
     @JoinTable(schema = "topfive", name = "top_items",
             joinColumns = @JoinColumn(name = "top_id"),
             inverseJoinColumns = @JoinColumn(name = "item_id"))

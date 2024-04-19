@@ -32,4 +32,12 @@ public class SongSelectController {
         songService.addToTop(topId, songId);
         return "redirect:/tops/%d".formatted(topId);
     }
+
+    @PostMapping("remove")
+    public String removeSongFromTop(@ModelAttribute("topId") Integer topId,
+                               @ModelAttribute("songId") Integer songId) {
+        log.debug("Removing song {} from top {}", songId, topId);
+        songService.removeFromTop(topId, songId);
+        return "redirect:/tops/%d".formatted(topId);
+    }
 }

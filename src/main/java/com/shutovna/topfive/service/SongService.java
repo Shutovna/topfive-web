@@ -22,4 +22,6 @@ public interface SongService {
     void deleteSong(Integer songId);
 
     void addToTop(Integer topId, Integer songId);
+
+    void removeFromTop(Integer topId, Integer songId);
 }

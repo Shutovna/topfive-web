@@ -255,4 +255,51 @@ public class SongServiceTest {
 
     }
 
+    @Test
+    public void addToTop_NoTop_ThrowNoSuchElement() {
+        // given
+        int topId = 123;
+        int songId = 2;
+        String title = "tille";
+        String description = "desc";
+        String filename = "file.mp3";
+        String contentType = "audio/mpeg";
+        int bitRate = 192;
+        String artist = "artist";
+        LocalDate releasedAt = LocalDate.now();
+        Integer genreId = 1;
+
+        Song song = new Song(songId, title, description,
+                new ItemData(filename, contentType),
+                new User(1), artist, releasedAt, bitRate, new Genre(genreId));
+        doReturn(Optional.of(song)).when(songRepository).findById(songId);
+
+        doReturn(Optional.empty()).when(topRepository).findById(topId);
+
+        //when
+        assertThrows(NoSuchElementException.class, () -> this.songService.addToTop(topId, songId));
+
+        //then
+        verify(songRepository).findById(songId);
+        verify(topRepository).findById(topId);
+        verifyNoMoreInteractions(songRepository);
+        verifyNoMoreInteractions(topRepository);
+
+    }
+
+    @Test
+    public void addToTop_NoSong_ThrowNoSuchElement() {
+        // given
+        int topId = 1;
+        int songId = 213;
+
+        doReturn(Optional.empty()).when(songRepository).findById(songId);
+        //when
+        assertThrows(NoSuchElementException.class, () -> this.songService.addToTop(topId, songId));
+
+        //then
+        verify(songRepository).findById(songId);
+        verifyNoMoreInteractions(songRepository);
+        verifyNoMoreInteractions(topRepository);
+    }
 }

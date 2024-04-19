@@ -6,19 +6,22 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" th:href="@{/styles.css}"></link>
-    <script type="text/javascript">
-        function selectSong(songId) {
-            document.forms[0].songId.value = songId;
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        function selectItem(itemId) {
+            var successUrl = [[${successUrl}]];
+            document.forms[0].itemId.value = itemId;
+            document.forms[0].action = successUrl;
             document.forms[0].submit();
         }
+        /*]]>*/
     </script>
 </head>
 <body class="container">
 <a data-th-href="@{/tops/{topId}(topId=${topId})}">К топу</a>
 <h1>Выбор песни</h1>
 <form method="post" data-th-action="@{/songs/select}">
-    <input type="hidden" data-th-name="topId" data-th-value="${topId}">
-    <input type="hidden" data-th-name="songId">
+    <input type="hidden" data-th-name="itemId">
     <table class="zui-table">
         <thead>
         <tr>
@@ -33,7 +36,7 @@
         </tr>
         </thead>
         <tbody>
-        <tr data-th-each="row : ${items}" th:attr="onclick=|selectSong(${row.item.id})|">
+        <tr data-th-each="row : ${items}" th:attr="onclick=|selectItem(${row.item.id})|">
             <td data-th-text="${row.item.id}"></td>
             <td data-th-text="${row.item.artist}"></td>
             <td data-th-text="${row.item.title}"></td>

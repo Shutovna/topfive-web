@@ -6,6 +6,8 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -15,45 +17,25 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Objects;
 
-@Data
-@AllArgsConstructor
-public class NewSongPayload {
+@Getter
+@Setter
+public class NewSongPayload extends NewItemPayload {
     @NotBlank(message = "{ru.nikitos.msg.song.artist.not_null}")
     @Size(min = 2, max = 50, message = "{ru.nikitos.msg.song.artist.size}")
     String artist;
-    @NotBlank(message = "{ru.nikitos.msg.song.title.not_null}")
-    @Size(min = 1, max = 50, message = "{ru.nikitos.msg.song.title.size}")
-    String title;
-    String description;
     Integer bitRate;
-
     @DateTimeFormat(pattern = "dd/MM/yyyy")
     LocalDate releasedAt;
-
     @NotNull(message = "{ru.nikitos.msg.song.genre.not_null}")
     Integer genreId;
 
-    Integer topId;
-
-    MultipartFile file;
-
-    @AssertTrue(message = "{ru.nikitos.msg.song.file.not_null}")
-    public boolean isFileSet() {
-        try {
-            return file != null &&
-                    !(StringUtils.isEmpty(file.getOriginalFilename()) || ArrayUtils.isEmpty(file.getBytes()));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @AssertTrue(message = "{ru.nikitos.msg.song.type.is_audio}")
-    public boolean isAudioFile() {
-        if (file == null) {
-            return false;
-        }
-        String contentType = file.getContentType();
-        return !StringUtils.isEmpty(contentType) && contentType.startsWith("audio");
+    public NewSongPayload(String title, String description, Integer topId, MultipartFile file,
+                          String artist, Integer bitRate, LocalDate releasedAt, Integer genreId) {
+        super(title, description, topId, file);
+        this.artist = artist;
+        this.bitRate = bitRate;
+        this.releasedAt = releasedAt;
+        this.genreId = genreId;
     }
 
     @Override
@@ -79,7 +61,7 @@ public class NewSongPayload {
                 && Objects.equals(description, that.description) && Objects.equals(bitRate, that.bitRate)
                 && Objects.equals(releasedAt, that.releasedAt) && Objects.equals(genreId, that.genreId)
                 && Objects.equals(topId, that.topId)
-                && Objects.equals(file.getOriginalFilename(), that.getFile().getOriginalFilename());
+                && Objects.equals(file.getOriginalFilename(), that.file.getOriginalFilename());
     }
 
     @Override

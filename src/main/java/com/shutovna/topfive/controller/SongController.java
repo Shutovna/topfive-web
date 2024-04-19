@@ -2,9 +2,11 @@ package com.shutovna.topfive.controller;
 
 import com.shutovna.topfive.controller.util.WebUtil;
 import com.shutovna.topfive.entities.Song;
+import com.shutovna.topfive.entities.payload.NewSongPayload;
 import com.shutovna.topfive.entities.payload.UpdateSongPayload;
+import com.shutovna.topfive.service.DefaultSongService;
 import com.shutovna.topfive.service.GenreService;
-import com.shutovna.topfive.service.SongService;
+import com.shutovna.topfive.service.ItemService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -19,7 +21,6 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
-import org.thymeleaf.util.StringUtils;
 
 import java.util.Locale;
 import java.util.NoSuchElementException;
@@ -29,7 +30,7 @@ import java.util.NoSuchElementException;
 @Slf4j
 @RequiredArgsConstructor
 public class SongController {
-    private final SongService songService;
+    private final ItemService<Song, NewSongPayload, UpdateSongPayload> songService;
 
     private final GenreService genreService;
 
@@ -37,7 +38,7 @@ public class SongController {
 
     @ModelAttribute("song")
     private Song getSong(@PathVariable Integer songId) {
-        return songService.findSong(songId).orElseThrow(
+        return songService.findItem(songId).orElseThrow(
                 () -> new NoSuchElementException("ru.nikitos.msg.song.not_found")
         );
     }
@@ -66,7 +67,7 @@ public class SongController {
                     .toList());
             return "songs/edit_song";
         }
-        songService.updateSong(songId, songPayload);
+        songService.updateItem(songId, songPayload);
         log.info("Updated song {}", songId);
         return "redirect:" + previousPage;
     }
@@ -75,7 +76,7 @@ public class SongController {
     public String deleteSong(@ModelAttribute("previousPage") String previousPage,
                              @PathVariable Integer songId,
                              Model model) {
-        songService.deleteSong(songId);
+        songService.deleteItem(songId);
         return "redirect:" + previousPage;
     }
 

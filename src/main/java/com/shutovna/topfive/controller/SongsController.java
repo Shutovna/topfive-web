@@ -5,15 +5,16 @@ import com.shutovna.topfive.controller.util.WebUtil;
 import com.shutovna.topfive.entities.User;
 import com.shutovna.topfive.entities.payload.NewSongPayload;
 import com.shutovna.topfive.entities.Song;
+import com.shutovna.topfive.entities.payload.UpdateSongPayload;
+import com.shutovna.topfive.service.DefaultSongService;
 import com.shutovna.topfive.service.GenreService;
-import com.shutovna.topfive.service.SongService;
+import com.shutovna.topfive.service.ItemService;
 import com.shutovna.topfive.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -29,14 +30,14 @@ import java.security.Principal;
 @Slf4j
 @RequiredArgsConstructor
 public class SongsController {
-    private final SongService songService;
+    private final ItemService<Song, NewSongPayload, UpdateSongPayload> songService;
     private final GenreService genreService;
     private final UserService userService;
 
     @GetMapping("table")
     public String showSongs(Model model) {
         log.debug("showSongs");
-        ItemTable<Song> itemTable = new ItemTable<>(songService.findAllSongs());
+        ItemTable<Song> itemTable = new ItemTable<>(songService.findAllItems());
         model.addAttribute("items", itemTable.getRows());
         return "songs/song_table";
     }
@@ -71,9 +72,7 @@ public class SongsController {
         MultipartFile file = songPayload.getFile();
         log.debug("MultipartFile: " + file);
         User user = userService.loadUserByUsername(principal.getName());
-        songService.createSong(songPayload.getArtist(), songPayload.getTitle(), songPayload.getDescription(),
-                songPayload.getBitRate(), songPayload.getReleasedAt(), songPayload.getGenreId(),
-                songPayload.getTopId(), file.getOriginalFilename(), file.getBytes(), file.getContentType(), user.getId());
+        songService.createItem(songPayload, user.getId());
         return "redirect:" + previousPage;
     }
 }

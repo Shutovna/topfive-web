@@ -6,10 +6,10 @@ import com.shutovna.topfive.entities.ItemData;
 import com.shutovna.topfive.entities.Song;
 import com.shutovna.topfive.entities.User;
 import com.shutovna.topfive.entities.payload.NewSongPayload;
-import com.shutovna.topfive.service.SongService;
+import com.shutovna.topfive.entities.payload.UpdateSongPayload;
+import com.shutovna.topfive.service.ItemService;
 import com.shutovna.topfive.service.UserService;
 import org.hamcrest.Matchers;
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -44,7 +44,7 @@ class SongsControllerIT {
     MockMvc mockMvc;
 
     @Autowired
-    private SongService songService;
+    ItemService<Song, NewSongPayload, UpdateSongPayload> songService;
 
     @Autowired
     private UserService userService;
@@ -177,7 +177,7 @@ class SongsControllerIT {
                         header().string(HttpHeaders.LOCATION, "/tops/1")
                 );
 
-        List<Song> allSongs = songService.findAllSongs();
+        List<Song> allSongs = songService.findAllItems();
         assertEquals(1, allSongs.size());
         Song song = allSongs.get(0);
         assertEquals("One", song.getTitle());
@@ -212,10 +212,11 @@ class SongsControllerIT {
                         status().isBadRequest(),
                         view().name("songs/new_song"),
                         model().attribute("payload", new NewSongPayload(
-                                " ", null, null, null,
                                 null, null, null,
                                 new MockMultipartFile("file",
-                                        "One.mp3", "video/mpeg", content))),
+                                        "One.mp3", "video/mpeg", content),
+                                " ", null, null, null
+                        )),
                         model().attribute("errors",
                                 Matchers.containsInAnyOrder(
                                         "Название исполнителя должно быть указано",
@@ -254,6 +255,7 @@ class SongsControllerIT {
 
                 );
     }
+
     @Test
     void createSong_UserIsNotAuthorized_ReturnsForbidden() throws Exception {
         // given

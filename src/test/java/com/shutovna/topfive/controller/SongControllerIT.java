@@ -1,13 +1,12 @@
 package com.shutovna.topfive.controller;
 
-import com.shutovna.topfive.controller.util.ItemRow;
 import com.shutovna.topfive.data.GenreRepository;
 import com.shutovna.topfive.entities.ItemData;
 import com.shutovna.topfive.entities.Song;
 import com.shutovna.topfive.entities.User;
 import com.shutovna.topfive.entities.payload.NewSongPayload;
 import com.shutovna.topfive.entities.payload.UpdateSongPayload;
-import com.shutovna.topfive.service.SongService;
+import com.shutovna.topfive.service.ItemService;
 import com.shutovna.topfive.service.UserService;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -17,9 +16,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.mock.web.MockPart;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -46,7 +42,7 @@ class SongControllerIT {
     MockMvc mockMvc;
 
     @Autowired
-    private SongService songService;
+    ItemService<Song, NewSongPayload, UpdateSongPayload> songService;
 
     @Autowired
     private UserService userService;
@@ -62,7 +58,7 @@ class SongControllerIT {
 
     @Test
     public void testScriptsLoaded() {
-        assertEquals(2, songService.findAllSongs().size());
+        assertEquals(2, songService.findAllItems().size());
     }
 
     @Test
@@ -124,9 +120,9 @@ class SongControllerIT {
                         header().string(HttpHeaders.LOCATION, "/songs/table")
                 );
 
-        List<Song> allSongs = songService.findAllSongs();
+        List<Song> allSongs = songService.findAllItems();
         assertEquals(2, allSongs.size());
-        Song song = songService.findSong(2).orElseThrow();
+        Song song = songService.findItem(2).orElseThrow();
         assertEquals("_changed", song.getTitle());
         assertEquals("Metallica_changed", song.getArtist());
         assertEquals("Details of song_changed", song.getDescription());
@@ -153,7 +149,7 @@ class SongControllerIT {
                 .andDo(print())
                 .andExpectAll(
                         status().isBadRequest(),
-                        model().attribute("payload", new UpdateSongPayload("_", null, null,
+                        model().attribute("payload", new UpdateSongPayload(null, null, "_",
                                 null, null, null)),
                         model().attribute("errors", Matchers.containsInAnyOrder(
                                 "Название исполнителя должно быть от 2 до 50 символов",
@@ -199,8 +195,8 @@ class SongControllerIT {
                         header().string(HttpHeaders.LOCATION, "/songs/table")
                 );
 
-        assertTrue(songService.findSong(2).isEmpty());
-        List<Song> allSongs = songService.findAllSongs();
+        assertTrue(songService.findItem(2).isEmpty());
+        List<Song> allSongs = songService.findAllItems();
         assertEquals(1, allSongs.size());
     }
 

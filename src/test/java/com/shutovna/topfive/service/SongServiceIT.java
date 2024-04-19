@@ -2,6 +2,8 @@ package com.shutovna.topfive.service;
 
 import com.shutovna.topfive.entities.Song;
 import com.shutovna.topfive.entities.Top;
+import com.shutovna.topfive.entities.payload.NewSongPayload;
+import com.shutovna.topfive.entities.payload.UpdateSongPayload;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -15,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @Transactional
 public class SongServiceIT {
     @Autowired
-    SongService songService;
+    ItemService<Song, NewSongPayload, UpdateSongPayload> songService;
 
     @Autowired
     TopService topService;
@@ -23,13 +25,13 @@ public class SongServiceIT {
     @Test
     @Sql({"/db/tops.sql", "/db/songs.sql"})
     public void deleteSong_SongIsDeleted() {
-        Song song = songService.findSong(2).orElseThrow();
+        Song song = songService.findItem(2).orElseThrow();
         assertFalse(song.getTops().isEmpty());
 
         Top top = topService.findTop(1).orElseThrow();
 
-        songService.deleteSong(2);
-        songService.deleteSong(3);
+        songService.deleteItem(2);
+        songService.deleteItem(3);
 
         assertTrue(top.getItems().isEmpty());
     }

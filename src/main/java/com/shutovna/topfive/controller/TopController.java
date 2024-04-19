@@ -5,7 +5,10 @@ import com.shutovna.topfive.controller.util.ItemTable;
 import com.shutovna.topfive.entities.Item;
 import com.shutovna.topfive.entities.Song;
 import com.shutovna.topfive.entities.Top;
+import com.shutovna.topfive.entities.payload.NewItemPayload;
+import com.shutovna.topfive.entities.payload.UpdateItemPayload;
 import com.shutovna.topfive.entities.payload.UpdateTopPayload;
+import com.shutovna.topfive.service.ItemService;
 import com.shutovna.topfive.service.TopService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -31,6 +34,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class TopController {
     private final TopService topService;
+
+    private final ItemService<Item, NewItemPayload, UpdateItemPayload> itemService;
 
     private final MessageSource messageSource;
 
@@ -93,6 +98,22 @@ public class TopController {
         topService.deleteTop(topId);
         log.info("Top {} deleted", top);
         return "redirect:/tops/table";
+    }
+
+    @PostMapping("addItem")
+    public String addItem(@PathVariable Integer topId,
+                          @RequestParam("itemId") Integer itemId) {
+        log.debug("Adding item {} to top {}", itemId, topId);
+        itemService.addToTop(topId, itemId);
+        return "redirect:/tops/%d".formatted(topId);
+    }
+
+    @PostMapping("removeItem")
+    public String removeItem(@PathVariable("topId") Integer topId,
+                                    @RequestParam("itemId") Integer itemId) {
+        log.debug("Removing item {} from top {}", itemId, topId);
+        itemService.removeFromTop(topId, itemId);
+        return "redirect:/tops/%d".formatted(topId);
     }
 
     @ExceptionHandler(NoSuchElementException.class)

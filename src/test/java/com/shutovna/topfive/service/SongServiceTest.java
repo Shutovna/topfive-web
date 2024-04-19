@@ -5,6 +5,7 @@ import com.shutovna.topfive.data.ItemRepository;
 import com.shutovna.topfive.data.TopRepository;
 import com.shutovna.topfive.data.UserRepository;
 import com.shutovna.topfive.entities.*;
+import com.shutovna.topfive.entities.payload.NewSongPayload;
 import com.shutovna.topfive.entities.payload.UpdateSongPayload;
 import com.shutovna.topfive.util.YamlUtil;
 import org.junit.jupiter.api.Test;
@@ -12,7 +13,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.mock.web.MockMultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -51,7 +54,7 @@ public class SongServiceTest {
         doReturn(songsList).when(itemRepository).findAll();
 
         // when
-        List<Song> result = songService.findAllSongs();
+        List<Song> result = songService.findAllItems();
 
         // then
         assertEquals(songsList, result);
@@ -70,7 +73,7 @@ public class SongServiceTest {
         doReturn(Optional.of(song)).when(itemRepository).findById(1);
 
         // when
-        Optional<Song> result = songService.findSong(1);
+        Optional<Song> result = songService.findItem(1);
 
         // then
         assertEquals(song, result.orElseThrow());
@@ -81,7 +84,7 @@ public class SongServiceTest {
     }
 
     @Test
-    public void createSong_ReturnsCreatedSong() {
+    public void createSong_ReturnsCreatedSong() throws IOException {
         // given
         int topId = 1;
         int songId = 2;
@@ -112,11 +115,11 @@ public class SongServiceTest {
 
         doReturn(new Genre(1, null)).when(genreRepository).getReferenceById(genreId);
         doReturn(new User(1, testUsername, null)).when(userRepository).getReferenceById(userId);
+        MockMultipartFile file = new MockMultipartFile("file", filename, contentType, data);
 
         // when
-        Song result = songService.createSong(
-                artist, title, description, bitRate, releasedAt, genreId,
-                topId, filename, data, contentType, 1);
+        Song result = songService.createItem(new NewSongPayload(
+                title, description, topId, file, artist, bitRate, releasedAt, genreId), userId);
 
         // then
         assertEquals(new Song(songId, title, description,
@@ -152,14 +155,14 @@ public class SongServiceTest {
                 new User(1), artist, releasedAt, bitRate, new Genre(genreId)))
         ).when(itemRepository).findById(songId);
 
-        doReturn(Optional.of(new Genre(genreId, "Metall"))).when(genreRepository).findById(1);
+        doReturn(new Genre(genreId, null)).when(genreRepository).getReferenceById(1);
 
         // when
-        songService.updateSong(songId, new UpdateSongPayload(artist, title, description, bitRate, releasedAt, genreId));
+        songService.updateItem(songId, new UpdateSongPayload(artist, title, description, bitRate, releasedAt, genreId));
 
         // then
         verify(itemRepository).findById(songId);
-        verify(genreRepository).findById(genreId);
+        verify(genreRepository).getReferenceById(genreId);
         verifyNoMoreInteractions(itemRepository);
         verifyNoMoreInteractions(topRepository);
         verifyNoMoreInteractions(genreRepository);
@@ -181,7 +184,7 @@ public class SongServiceTest {
 
         // when
         assertThrows(NoSuchElementException.class, () ->
-                songService.updateSong(songId, new UpdateSongPayload(artist, title, description, bitRate, releasedAt, genreId)));
+                songService.updateItem(songId, new UpdateSongPayload(artist, title, description, bitRate, releasedAt, genreId)));
 
         // then
         verify(itemRepository).findById(songId);
@@ -209,7 +212,7 @@ public class SongServiceTest {
         doReturn(Optional.of(song)).when(itemRepository).findById(songId);
 
         //when
-        this.songService.deleteSong(songId);
+        this.songService.deleteItem(songId);
 
         //then
         verify(itemRepository).findById(songId);

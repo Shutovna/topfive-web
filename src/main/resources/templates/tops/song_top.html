@@ -50,14 +50,7 @@
     </tbody>
 </table>
 
-<div th:switch="${top.type}">
-    <p th:case="${T(com.shutovna.topfive.entities.TopType).SONG}">
-        <a data-th-href="@{/songs/create(topId=${top.id})}">+ Добавить песню</a></p>
-    <p th:case="${T(com.shutovna.topfive.entities.TopType).VIDEO}">
-        <a data-th-href="@{/videos/create?type=VIDEO}">+ Добавить видео</a></p>
-    <p th:case="${T(com.shutovna.topfive.entities.TopType).PHOTO}">
-        <a data-th-href="@{/photos/create?type=PHOTO}">+ Добавить фото</a></p>
-</div>
+<a th:if="${top.items.size < 5}" data-th-href="@{/songs/select(topId=${top.id})}">+ Добавить песню</a></p>
 
 <form method="get" data-th-action="@{/tops/{topId}/edit(topId=${top.id})}">
     <button type="submit">Изменить</button>

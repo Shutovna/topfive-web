@@ -87,4 +87,11 @@ public class DefaultSongService implements SongService {
             songRepository.delete(song.get());
         }
     }
+
+    @Override
+    public void addToTop(Integer topId, Integer songId) {
+        Song song = songRepository.findById(songId).orElseThrow(NoSuchElementException::new);
+        Top top = topRepository.findById(topId).orElseThrow(NoSuchElementException::new);
+        top.addItem(song);
+    }
 }

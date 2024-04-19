@@ -20,4 +20,6 @@ public interface SongService {
     void updateSong(Integer songId, UpdateSongPayload payload);
 
     void deleteSong(Integer songId);
+
+    void addToTop(Integer topId, Integer songId);
 }

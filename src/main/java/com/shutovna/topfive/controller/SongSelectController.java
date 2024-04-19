@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/songs/select")
 @Slf4j
 @RequiredArgsConstructor
-public class SongsSelectController {
+public class SongSelectController {
     private final SongService songService;
 
     @GetMapping
@@ -26,8 +26,8 @@ public class SongsSelectController {
     }
 
     @PostMapping
-    public String selectSong(@ModelAttribute("topId") Integer topId,
-                           @ModelAttribute("songId") Integer songId) {
+    public String addSongToTop(@ModelAttribute("topId") Integer topId,
+                               @ModelAttribute("songId") Integer songId) {
         log.debug("Adding song {} to top {}", songId, topId);
         songService.addToTop(topId, songId);
         return "redirect:/tops/%d".formatted(topId);

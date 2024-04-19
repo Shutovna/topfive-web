@@ -15,12 +15,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.*;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -218,6 +215,44 @@ public class SongServiceTest {
         verifyNoMoreInteractions(songRepository);
         verifyNoMoreInteractions(topRepository);
         verifyNoMoreInteractions(fileStorageService);
+    }
+
+    @Test
+    public void addToTop_AddToTop() {
+
+        // given
+        int topId = 1;
+        int songId = 2;
+        String title = "tille";
+        String description = "desc";
+        String filename = "file.mp3";
+        String contentType = "audio/mpeg";
+        int bitRate = 192;
+        String artist = "artist";
+        LocalDate releasedAt = LocalDate.now();
+        Integer genreId = 1;
+
+        Song song = new Song(songId, title, description,
+                new ItemData(filename, contentType),
+                new User(1), artist, releasedAt, bitRate, new Genre(genreId));
+        doReturn(Optional.of(song)).when(songRepository).findById(songId);
+
+        Top top = new Top(topId, TopType.SONG, "Title %d".formatted(topId),
+                "details %d".formatted(topId), new User(1));
+        doReturn(Optional.of(top)).when(topRepository).findById(topId);
+
+        //when
+        this.songService.addToTop(topId, songId);
+
+        //then
+        Iterator<Item> iterator = top.getItems().iterator();
+        assertEquals(song, iterator.next());
+        assertFalse(iterator.hasNext());
+        verify(songRepository).findById(songId);
+        verify(topRepository).findById(topId);
+        verifyNoMoreInteractions(songRepository);
+        verifyNoMoreInteractions(topRepository);
+
     }
 
 }

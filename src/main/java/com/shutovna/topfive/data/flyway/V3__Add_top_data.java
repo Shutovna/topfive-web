@@ -3,6 +3,7 @@ package com.shutovna.topfive.data.flyway;
 import org.flywaydb.core.api.migration.BaseJavaMigration;
 import org.flywaydb.core.api.migration.Context;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
@@ -11,6 +12,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 @Component
+@Profile("dev")
 public class V3__Add_top_data extends BaseJavaMigration {
 
 

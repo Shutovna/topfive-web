@@ -10,6 +10,7 @@ import org.flywaydb.core.api.migration.BaseJavaMigration;
 import org.flywaydb.core.api.migration.Context;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
@@ -24,6 +25,7 @@ import java.util.List;
 import java.util.Random;
 
 @Component
+@Profile("dev")
 public class V4__Add_song_data extends BaseJavaMigration {
     private static final String filename = "example_song.mp3";
 

@@ -8,8 +8,8 @@ spring:
     name:
       topfive-web
   datasource:
-    url: jdbc:postgresql://localhost:5432/topfive
-    username: sa
+    url: jdbc:postgresql://topfive-db:5432/postgres
+    username: postgres
     password: password
     hikari:
       connectionTimeout: '20000'
@@ -30,7 +30,7 @@ topfive:
     username: nikitos
   file:
     store:
-      dir: C:\topfive-files
+      dir: topfive-data
 
 logging:
   level:

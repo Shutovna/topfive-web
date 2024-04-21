@@ -103,6 +103,10 @@ public class V4__Add_song_data extends BaseJavaMigration {
             topItemsSt.close();
         }
 
+        File dir = new File(fileStoreDir);
+        if(!dir.exists()) {
+            dir.mkdirs();
+        }
         File example = new File(fileStoreDir, filename);
         IOUtils.copy(new ByteArrayInputStream(fileContent), new FileOutputStream(example));
     }

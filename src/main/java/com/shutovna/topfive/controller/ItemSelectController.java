@@ -37,7 +37,7 @@ public class ItemSelectController {
     @GetMapping
     public String showSongs(@RequestParam Integer topId, @RequestParam String successUrl, Model model) {
         log.debug("showSongs");
-        ItemTable<Item> itemTable = new ItemTable<>(itemService.findAvailableForTop(topId));
+        ItemTable<Item> itemTable = new ItemTable<>(itemService.findAvailableForTopItems(topId));
         model.addAttribute("items", itemTable.getRows());
         model.addAttribute("topId", topId);
         model.addAttribute("successUrl", successUrl);

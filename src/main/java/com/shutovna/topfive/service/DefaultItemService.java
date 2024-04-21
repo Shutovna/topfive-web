@@ -45,7 +45,7 @@ public class DefaultItemService
     }
 
     @Override
-    public List<T> findAvailableForTop(Integer topId) {
+    public List<T> findAvailableForTopItems(Integer topId) {
         Top top = topRepository.findById(topId).orElseThrow(NoSuchElementException::new);
         return itemRepository.findAvailableForTop(top, itemClassesByTopType.get(top.getType()));
     }

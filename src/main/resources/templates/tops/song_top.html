@@ -7,8 +7,8 @@
           integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" th:href="@{/styles.css}"></link>
     <script type="text/javascript">
-        function removeSong(songId) {
-            document.forms[0].songId.value = songId;
+        function removeItem(itemId)     {
+            document.forms[0].itemId.value = itemId;
             document.forms[0].submit();
             return false;
         }
@@ -24,9 +24,9 @@
     <li><strong>Тип</strong>: <span data-th-text="${top.type.name}"></span></li>
 </ul>
 
-<form method="post" data-th-action="@{/songs/select/remove}">
+<form method="post" data-th-action="@{/tops/{topId}/removeItem(topId=${top.id})}">
     <input type="hidden" data-th-name="topId" data-th-value="${top.id}">
-    <input type="hidden" data-th-name="songId">
+    <input type="hidden" data-th-name="itemId">
     <table class="zui-table">
         <thead>
         <tr>
@@ -57,14 +57,14 @@
                 <audio controls th:src="${row.url}"></audio>
             </td>
             <td>
-                <a href="#" th:attr="onclick=|removeSong(${row.item.id})|">Удалить</a>
+                <a href="#" th:attr="onclick=|removeItem(${row.item.id})|">Удалить</a>
             </td>
         </tr>
         </tbody>
     </table>
 </form>
 <a th:if="${top.items.size < 5}"
-   data-th-href="@{/songs/select(topId=${top.id}, successUrl=@{/tops/{topId}/addItem(topId=${top.id})})}">
+   data-th-href="@{/items/select(topId=${top.id}, successUrl=@{/tops/{topId}/addItem(topId=${top.id})})}">
     + Добавить песню</a></p>
 
 <form method="get" data-th-action="@{/tops/{topId}/edit(topId=${top.id})}">

@@ -35,26 +35,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @Transactional
 @Sql({"/db/tops.sql", "/db/songs.sql"})
-class SongControllerIT {
+class SongControllerIT extends BaseSongTest {
     private static final String filename = "example_song.mp3";
 
     @Autowired
     MockMvc mockMvc;
 
-    @Autowired
-    ItemService<Song, NewSongPayload, UpdateSongPayload> songService;
-
-    @Autowired
-    private UserService userService;
-
-    @Autowired
-    private GenreRepository genreRepository;
-
-    @Value("${topfive.test.username}")
-    private String testUsername;
-
-    @Value("classpath:" + filename)
-    private Resource exampleFile;
 
     @Test
     public void testScriptsLoaded() {
@@ -216,17 +202,5 @@ class SongControllerIT {
                         status().isForbidden()
                 );
 
-    }
-
-    private Song getTestSong() {
-        return new Song(2, "Unforgiven", "Cool song",
-                new ItemData("Unforgiven.mp3", "audio/mpeg"),
-                getTestUser(), "Metallica",
-                LocalDate.of(1990, 11, 29),
-                192, genreRepository.findById(1).orElseThrow());
-    }
-
-    private User getTestUser() {
-        return userService.loadUserByUsername(testUsername);
     }
 }

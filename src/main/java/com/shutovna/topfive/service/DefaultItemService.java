@@ -1,13 +1,9 @@
 package com.shutovna.topfive.service;
 
-import com.shutovna.topfive.data.GenreRepository;
 import com.shutovna.topfive.data.ItemRepository;
 import com.shutovna.topfive.data.TopRepository;
 import com.shutovna.topfive.data.UserRepository;
-import com.shutovna.topfive.entities.Item;
-import com.shutovna.topfive.entities.ItemData;
-import com.shutovna.topfive.entities.Top;
-import com.shutovna.topfive.entities.payload.ItemPayload;
+import com.shutovna.topfive.entities.*;
 import com.shutovna.topfive.entities.payload.NewItemPayload;
 import com.shutovna.topfive.entities.payload.UpdateItemPayload;
 import lombok.RequiredArgsConstructor;
@@ -16,10 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.*;
 
 @RequiredArgsConstructor
 @Service
@@ -49,6 +42,20 @@ public class DefaultItemService
     @Override
     public List<T> findAllItems() {
         return itemRepository.findAll();
+    }
+
+    @Override
+    public List<T> findAvailableForTop(Integer topId) {
+        Top top = topRepository.findById(topId).orElseThrow(NoSuchElementException::new);
+        return itemRepository.findAvailableForTop(top, itemClassesByTopType.get(top.getType()));
+    }
+
+    static Map<TopType, Class<?>> itemClassesByTopType = new HashMap<>();
+
+    static {
+        itemClassesByTopType.put(TopType.SONG, Song.class);
+        itemClassesByTopType.put(TopType.VIDEO, Video.class);
+        itemClassesByTopType.put(TopType.PHOTO, Photo.class);
     }
 
     @Override

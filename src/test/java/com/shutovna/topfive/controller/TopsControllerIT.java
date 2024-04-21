@@ -31,20 +31,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
-class TopsControllerIT {
+class TopsControllerIT extends BaseTest {
 
     @Autowired
     MockMvc mockMvc;
 
     @Autowired
     private TopService topService;
-
-    @Autowired
-    private UserService userService;
-
-    @Value("${topfive.test.username}")
-    private String testUsername;
-
 
     @Test
     @Sql("/db/tops.sql")
@@ -65,7 +58,8 @@ class TopsControllerIT {
                         model().attribute("tops", List.of(
                                 new Top(1, TopType.SONG, "Top 1", "Details of 1", getTestUser()),
                                 new Top(2, TopType.VIDEO, "Top 2", "Details of 2", getTestUser()),
-                                new Top(3, TopType.PHOTO, "Top 3", "Details of 3", getTestUser())
+                                new Top(3, TopType.PHOTO, "Top 3", "Details of 3", getTestUser()),
+                                new Top(4, TopType.SONG, "Top 4", "Details of 4", getTestUser())
                         ))
                 );
     }
@@ -187,9 +181,5 @@ class TopsControllerIT {
                 .andExpectAll(
                         status().isForbidden()
                 );
-    }
-
-    private User getTestUser() {
-        return userService.loadUserByUsername(testUsername);
     }
 }

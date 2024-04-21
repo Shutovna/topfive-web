@@ -9,8 +9,8 @@ spring:
       topfive-web
   datasource:
     url: jdbc:postgresql://localhost:5432/topfive
-    username: topfive
-    password: her
+    username: sa
+    password: password
     hikari:
       connectionTimeout: '20000'
       maximumPoolSize: '5'

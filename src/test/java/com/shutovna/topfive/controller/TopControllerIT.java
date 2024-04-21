@@ -30,19 +30,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Transactional
 @AutoConfigureMockMvc
 @Sql("/db/tops.sql")
-class TopControllerIT {
+class TopControllerIT extends BaseTest {
 
     @Autowired
     MockMvc mockMvc;
     @Autowired
     private TopService topService;
 
-    @Autowired
-    private UserService userService;
 
-
-    @Value("${topfive.test.username}")
-    private String testUsername;
 
     @Test
     void getTop_TopExists_ReturnsTopPage() throws Exception {
@@ -282,9 +277,5 @@ class TopControllerIT {
                 .andExpectAll(
                         status().isForbidden()
                 );
-    }
-
-    private User getTestUser() {
-        return userService.loadUserByUsername(testUsername);
     }
 }

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Выбор песни</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" th:href="@{/styles.css}"></link>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        function selectItem(itemId) {
+            var successUrl = [[${successUrl}]];
+            document.forms[0].itemId.value = itemId;
+            document.forms[0].action = successUrl;
+            document.forms[0].submit();
+        }
+        /*]]>*/
+    </script>
+</head>
+<body class="container">
+<a data-th-href="@{/tops/{topId}(topId=${topId})}">К топу</a>
+<h1>Выбор песни</h1>
+<form method="post" data-th-action="@{/items/select}">
+    <input type="hidden" data-th-name="itemId">
+    <!--<table class="zui-table">
+        <thead>
+        <tr>
+            <th>#</th>
+            <th>Исполнитель</th>
+            <th>Композиция</th>
+            <th>Описание</th>
+            <th>Битрейт</th>
+            <th>Дата выхода</th>
+            <th>Жанр</th>
+            <th>Имя файла</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr data-th-each="row : ${items}" th:attr="onclick=|selectItem(${row.item.id})|">
+            <td data-th-text="${row.item.id}"></td>
+            <td data-th-text="${row.item.artist}"></td>
+            <td data-th-text="${row.item.title}"></td>
+            <td data-th-text="${row.item.description}"></td>
+            <td data-th-text="${row.item.bitRate}"></td>
+            <td data-th-text="${#temporals.format(row.item.releasedAt, 'dd/MM/yyyy')}"></td>
+            <td data-th-text="${row.item.genre?.name}"></td>
+            <td data-th-text="${row.item.data.filename}"></td>
+        </tr>
+        </tbody>
+    </table>-->
+</form>
+<a data-th-href="@{/songs/create}">+ Создать песню</a>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+</body>
+</html>

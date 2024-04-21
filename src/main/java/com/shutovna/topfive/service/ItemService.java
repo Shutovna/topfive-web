@@ -10,6 +10,7 @@ import java.util.Optional;
 
 public interface ItemService<T extends Item, N extends NewItemPayload, U extends UpdateItemPayload> {
     List<T> findAllItems();
+    List<T> findAvailableForTop(Integer topId);
 
     Optional<T> findItem(Integer itemId);
 

@@ -2,13 +2,10 @@ package com.shutovna.topfive.controller;
 
 import com.shutovna.topfive.controller.util.ItemRow;
 import com.shutovna.topfive.data.GenreRepository;
-import com.shutovna.topfive.entities.ItemData;
 import com.shutovna.topfive.entities.Song;
-import com.shutovna.topfive.entities.User;
 import com.shutovna.topfive.entities.payload.NewSongPayload;
 import com.shutovna.topfive.entities.payload.UpdateSongPayload;
 import com.shutovna.topfive.service.ItemService;
-import com.shutovna.topfive.service.UserService;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,23 +34,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
-class SongsControllerIT {
+class SongsControllerIT extends BaseSongTest{
     private static final String filename = "example_song.mp3";
 
     @Autowired
     MockMvc mockMvc;
 
-    @Autowired
-    ItemService<Song, NewSongPayload, UpdateSongPayload> songService;
 
-    @Autowired
-    private UserService userService;
 
-    @Autowired
-    private GenreRepository genreRepository;
 
-    @Value("${topfive.test.username}")
-    private String testUsername;
+
 
     @Value("classpath:" + filename)
     private Resource exampleFile;
@@ -79,23 +69,6 @@ class SongsControllerIT {
                 );
     }
 
-
-    private Song getTestSong2() {
-        return new Song(3, "Fuel", "Another cool song",
-                new ItemData("Fuel.mp3", "audio/mpeg"),
-                getTestUser(), "Metallica",
-                LocalDate.of(1990, 1, 29),
-                256, genreRepository.findById(1).orElseThrow());
-    }
-
-
-    private Song getTestSong() {
-        return new Song(2, "Unforgiven", "Cool song",
-                new ItemData("Unforgiven.mp3", "audio/mpeg"),
-                getTestUser(), "Metallica",
-                LocalDate.of(1990, 11, 29),
-                192, genreRepository.findById(1).orElseThrow());
-    }
 
     @Test
     void getSongList_UserIsNotAuthorized_ReturnsForbidden() throws Exception {
@@ -272,9 +245,5 @@ class SongsControllerIT {
                 .andExpectAll(
                         status().isForbidden()
                 );
-    }
-
-    private User getTestUser() {
-        return userService.loadUserByUsername(testUsername);
     }
 }

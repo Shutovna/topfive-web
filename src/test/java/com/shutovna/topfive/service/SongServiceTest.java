@@ -99,12 +99,12 @@ public class SongServiceTest {
         Integer genreId = 1;
         byte[] data = {1, 3, 4};
 
-        Top top = new Top(topId, TopType.SONG, "title", null, new User(1));
+        Top top = new Top(topId, TopType.SONG, "title", null, new User(1, testUsername, null));
         Genre genre = new Genre(1, null);
 
         Song song = new Song(null, title, description,
                 new ItemData(filename, contentType),
-                new User(1), artist, releasedAt, bitRate, genre);
+                new User(1, testUsername, null), artist, releasedAt, bitRate, genre);
 
         doReturn(Optional.of(top)).when(topRepository).findById(topId);
 

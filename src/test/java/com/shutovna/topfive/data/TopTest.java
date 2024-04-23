@@ -118,7 +118,9 @@ public class TopTest {
     public void testMax5ItemsInTop() {
         Top top = new Top(null, TopType.SONG, "newTitle", "newDetails", getTestUser());
         for (int i = 0; i < 5; i++) {
-            top.addItem(itemRepository.save(getTestSong()));
+            Song testSong = getTestSong();
+            testSong.setTitle(testSong.getTitle() + i);
+            top.addItem(itemRepository.save(testSong));
         }
 
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
@@ -128,10 +130,11 @@ public class TopTest {
 
         top = topRepository.saveAndFlush(top);
 
-        top.addItem(itemRepository.save(getTestSong()));
+        Song song = getTestSong();
+        song.setTitle(song.getTitle() +"6");
+        top.addItem(itemRepository.save(song));
         violations = validator.validate(top);
         assertEquals("размер должен находиться в диапазоне от 0 до 5", violations.iterator().next().getMessage());
-
     }
 
     private Song getTestSong() {

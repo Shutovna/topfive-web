@@ -72,11 +72,11 @@ public abstract class Item {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Item item)) return false;
-        return Objects.equals(getId(), item.getId());
+        return Objects.equals(title, item.title) && Objects.equals(data, item.data) && Objects.equals(user, item.user);
     }
 
     @Override
     public int hashCode() {
-        return getClass().hashCode();
+        return Objects.hash(title, data, user);
     }
 }

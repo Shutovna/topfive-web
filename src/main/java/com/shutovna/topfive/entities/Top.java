@@ -76,16 +76,16 @@ public class Top {
                 '}';
     }
 
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Top top)) return false;
-        return Objects.equals(getId(), top.getId()) && getType() == top.getType();
+        if (!(o instanceof Top)) return false;
+        Top top = (Top) o;
+        return type == top.type && Objects.equals(title, top.title) && Objects.equals(user, top.user);
     }
 
     @Override
     public int hashCode() {
-        return getClass().hashCode();
+        return Objects.hash(type, title, user);
     }
 }

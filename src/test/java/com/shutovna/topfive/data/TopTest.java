@@ -84,17 +84,20 @@ public class TopTest {
     @Test
     public void testAddRemoveItems() {
         Top top = new Top(null, TopType.SONG, "newTitle", "newDetails", getTestUser());
-        Song song = new Song(null, "title", "desc",
+        Song song = itemRepository.save(new Song(null, "title", "desc",
                 new ItemData("file.txt", "newFileType"), getTestUser(),
-                "artist", null, null, new Genre(1));
+                "artist", null, null, new Genre(1)));
+        Song song2 = itemRepository.save(getTestSong());
         top.addItem(song);
+        top.addItem(song2);
         assertEquals(1, song.getTops().size());
-        assertEquals(1, top.getItems().size());
+        assertEquals(2, top.getItems().size());
 
         top = topRepository.saveAndFlush(top);
         assertTrue(top.getItems().contains(song));
 
         top.removeItem(song);
+        top.removeItem(song2);
         assertTrue(song.getTops().isEmpty());
         assertTrue(top.getItems().isEmpty());
     }

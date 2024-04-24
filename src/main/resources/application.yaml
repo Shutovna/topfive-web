@@ -18,6 +18,7 @@ spring:
     schemas:
       - public
       - topfive
+    out-of-order: true
   jpa:
     show-sql: true
   servlet:

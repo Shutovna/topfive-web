@@ -1,12 +1,8 @@
 package com.shutovna.topfive.controller;
 
-import com.shutovna.topfive.controller.util.ItemRow;
 import com.shutovna.topfive.controller.util.ItemTable;
 import com.shutovna.topfive.entities.Item;
-import com.shutovna.topfive.entities.Song;
 import com.shutovna.topfive.entities.Top;
-import com.shutovna.topfive.entities.payload.NewItemPayload;
-import com.shutovna.topfive.entities.payload.UpdateItemPayload;
 import com.shutovna.topfive.entities.payload.UpdateTopPayload;
 import com.shutovna.topfive.service.ItemService;
 import com.shutovna.topfive.service.TopService;
@@ -21,12 +17,9 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
 
-import java.util.List;
 import java.util.Locale;
 import java.util.NoSuchElementException;
-import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("tops/{topId:\\d+}")
@@ -35,7 +28,7 @@ import java.util.stream.Collectors;
 public class TopController {
     private final TopService topService;
 
-    private final ItemService<Item, NewItemPayload, UpdateItemPayload> itemService;
+    private final ItemService<Item> itemService;
 
     private final MessageSource messageSource;
 

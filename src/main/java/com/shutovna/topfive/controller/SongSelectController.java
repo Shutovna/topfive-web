@@ -2,10 +2,6 @@ package com.shutovna.topfive.controller;
 
 import com.shutovna.topfive.controller.util.ItemTable;
 import com.shutovna.topfive.entities.Item;
-import com.shutovna.topfive.entities.Song;
-import com.shutovna.topfive.entities.payload.NewItemPayload;
-import com.shutovna.topfive.entities.payload.UpdateItemPayload;
-import com.shutovna.topfive.service.DefaultItemService;
 import com.shutovna.topfive.service.ItemService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 @RequiredArgsConstructor
 public class SongSelectController {
-    private final ItemService<Item, NewItemPayload, UpdateItemPayload> itemService;
+    private final ItemService<Item> itemService;
 
     @GetMapping
     public String showSongs(@RequestParam Integer topId, @RequestParam String successUrl, Model model) {

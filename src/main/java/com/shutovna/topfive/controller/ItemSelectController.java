@@ -4,8 +4,6 @@ import com.shutovna.topfive.controller.util.ItemTable;
 import com.shutovna.topfive.entities.Item;
 import com.shutovna.topfive.entities.Top;
 import com.shutovna.topfive.entities.TopType;
-import com.shutovna.topfive.entities.payload.NewItemPayload;
-import com.shutovna.topfive.entities.payload.UpdateItemPayload;
 import com.shutovna.topfive.service.ItemService;
 import com.shutovna.topfive.service.TopService;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +20,7 @@ import java.util.Map;
 @Slf4j
 @RequiredArgsConstructor
 public class ItemSelectController {
-    private final ItemService<Item, NewItemPayload, UpdateItemPayload> itemService;
+    private final ItemService<Item> itemService;
 
     private final TopService topService;
 

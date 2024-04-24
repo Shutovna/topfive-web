@@ -19,7 +19,12 @@ import java.util.Objects;
 
 @Getter
 @Setter
-public class NewSongPayload extends NewItemPayload {
+public class NewSongPayload {
+    @NotBlank(message = "{ru.nikitos.msg.song.title.not_null}")
+    @Size(min = 1, max = 50, message = "{ru.nikitos.msg.song.title.size}")
+    String title;
+    String description;
+
     @NotBlank(message = "{ru.nikitos.msg.song.artist.not_null}")
     @Size(min = 2, max = 50, message = "{ru.nikitos.msg.song.artist.size}")
     String artist;
@@ -29,13 +34,38 @@ public class NewSongPayload extends NewItemPayload {
     @NotNull(message = "{ru.nikitos.msg.song.genre.not_null}")
     Integer genreId;
 
+    Integer topId;
+    MultipartFile file;
+
     public NewSongPayload(String title, String description, Integer topId, MultipartFile file,
                           String artist, Integer bitRate, LocalDate releasedAt, Integer genreId) {
-        super(title, description, topId, file);
+        this.title = title;
+        this.description = description;
+        this.topId = topId;
+        this.file = file;
         this.artist = artist;
         this.bitRate = bitRate;
         this.releasedAt = releasedAt;
         this.genreId = genreId;
+    }
+
+    @AssertTrue(message = "{ru.nikitos.msg.song.file.not_null}")
+    public boolean isFileSet() {
+        try {
+            return file != null &&
+                    !(StringUtils.isEmpty(file.getOriginalFilename()) || ArrayUtils.isEmpty(file.getBytes()));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @AssertTrue(message = "{ru.nikitos.msg.song.type.is_audio}")
+    public boolean isAudioFile() {
+        if (file == null) {
+            return false;
+        }
+        String contentType = file.getContentType();
+        return !StringUtils.isEmpty(contentType) && contentType.startsWith("audio");
     }
 
     @Override

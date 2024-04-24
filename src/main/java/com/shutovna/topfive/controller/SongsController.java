@@ -2,13 +2,11 @@ package com.shutovna.topfive.controller;
 
 import com.shutovna.topfive.controller.util.ItemTable;
 import com.shutovna.topfive.controller.util.WebUtil;
+import com.shutovna.topfive.entities.Song;
 import com.shutovna.topfive.entities.User;
 import com.shutovna.topfive.entities.payload.NewSongPayload;
-import com.shutovna.topfive.entities.Song;
-import com.shutovna.topfive.entities.payload.UpdateSongPayload;
-import com.shutovna.topfive.service.DefaultSongService;
 import com.shutovna.topfive.service.GenreService;
-import com.shutovna.topfive.service.ItemService;
+import com.shutovna.topfive.service.SongService;
 import com.shutovna.topfive.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -30,7 +28,7 @@ import java.security.Principal;
 @Slf4j
 @RequiredArgsConstructor
 public class SongsController {
-    private final ItemService<Song, NewSongPayload, UpdateSongPayload> songService;
+    private final SongService songService;
     private final GenreService genreService;
     private final UserService userService;
 

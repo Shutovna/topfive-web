@@ -4,40 +4,31 @@ import com.shutovna.topfive.data.ItemRepository;
 import com.shutovna.topfive.data.TopRepository;
 import com.shutovna.topfive.data.UserRepository;
 import com.shutovna.topfive.entities.*;
-import com.shutovna.topfive.entities.payload.NewItemPayload;
-import com.shutovna.topfive.entities.payload.UpdateItemPayload;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.*;
 
 @RequiredArgsConstructor
 @Service
 @Transactional
-public class DefaultItemService
-        <T extends Item, N extends NewItemPayload, U extends UpdateItemPayload> implements ItemService<T, N, U> {
-    private final ItemRepository<T> itemRepository;
+public class DefaultItemService <T extends Item> implements ItemService<T> {
+    private final static Map<TopType, Class<?>> itemClassesByTopType = new HashMap<>();
 
-    private final TopRepository topRepository;
-
-    private final FileStorageService fileStorageService;
-
-    private final UserRepository userRepository;
-
-    T createItemObject() {
-        throw new UnsupportedOperationException();
+    static {
+        itemClassesByTopType.put(TopType.SONG, Song.class);
+        itemClassesByTopType.put(TopType.VIDEO, Video.class);
+        itemClassesByTopType.put(TopType.PHOTO, Photo.class);
     }
 
-    void fillItemForCreate(T item, N payload) {
-        throw new UnsupportedOperationException();
-    }
+    protected final ItemRepository<T> itemRepository;
 
-    void fillItemForUpdate(T item, U payload) {
-        throw new UnsupportedOperationException();
-    }
+    protected final TopRepository topRepository;
+
+    protected final FileStorageService fileStorageService;
+
+    protected final UserRepository userRepository;
 
     @Override
     public List<T> findAllItems() {
@@ -48,14 +39,6 @@ public class DefaultItemService
     public List<T> findAvailableForTopItems(Integer topId) {
         Top top = topRepository.findById(topId).orElseThrow(NoSuchElementException::new);
         return itemRepository.findAvailableForTop(top, itemClassesByTopType.get(top.getType()));
-    }
-
-    static Map<TopType, Class<?>> itemClassesByTopType = new HashMap<>();
-
-    static {
-        itemClassesByTopType.put(TopType.SONG, Song.class);
-        itemClassesByTopType.put(TopType.VIDEO, Video.class);
-        itemClassesByTopType.put(TopType.PHOTO, Photo.class);
     }
 
     @Override
@@ -72,38 +55,6 @@ public class DefaultItemService
             }
             itemRepository.delete(song.get());
         }
-    }
-
-    @Override
-    public T createItem(N payload, Integer userId) throws IOException {
-        T item = createItemObject();
-        item.setTitle(payload.getTitle());
-        item.setDescription(payload.getDescription());
-        item.setUser(userRepository.getReferenceById(userId));
-        if (payload.getTopId() != null) {
-            item.addTop(topRepository.findById(payload.getTopId()).orElseThrow());
-        }
-
-        MultipartFile file = payload.getFile();
-        ItemData itemData = new ItemData();
-        itemData.setFilename(file.getOriginalFilename());
-        itemData.setContentType(file.getContentType());
-        item.setData(itemData);
-
-        fillItemForCreate(item, payload);
-
-        fileStorageService.createItemDataFile(item.getData().getFilename(), file.getBytes());
-
-        return itemRepository.save(item);
-    }
-
-    @Override
-    public void updateItem(Integer itemId, U payload) {
-        T item = itemRepository.findById(itemId).orElseThrow(NoSuchElementException::new);
-        item.setTitle(payload.getTitle());
-        item.setDescription(payload.getDescription());
-
-        fillItemForUpdate(item, payload);
     }
 
     @Override

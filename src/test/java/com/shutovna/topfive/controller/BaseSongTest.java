@@ -6,13 +6,14 @@ import com.shutovna.topfive.entities.Song;
 import com.shutovna.topfive.entities.payload.NewSongPayload;
 import com.shutovna.topfive.entities.payload.UpdateSongPayload;
 import com.shutovna.topfive.service.ItemService;
+import com.shutovna.topfive.service.SongService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
 
 public abstract class BaseSongTest extends BaseTest {
     @Autowired
-    ItemService<Song, NewSongPayload, UpdateSongPayload> songService;
+    SongService songService;
 
     @Autowired
     protected GenreRepository genreRepository;

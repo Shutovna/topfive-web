@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @Slf4j
 public class SongsRestController {
-    private final ItemService<Song, NewSongPayload, UpdateSongPayload> songService;
+    private final ItemService<Song> songService;
 
     @RequestMapping(value = "findAll", method = RequestMethod.GET, produces = MimeTypeUtils.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> findSongs() {

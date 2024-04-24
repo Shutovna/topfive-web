@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @Transactional
 public class SongServiceIT {
     @Autowired
-    ItemService<Song, NewSongPayload, UpdateSongPayload> songService;
+    SongService songService;
 
     @Autowired
     TopService topService;

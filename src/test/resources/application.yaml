@@ -11,7 +11,7 @@ topfive:
     username: nikitos
   file:
     store:
-      dir: data
+      dir: topfive-test-data
 
 logging:
   level:

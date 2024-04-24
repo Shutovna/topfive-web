@@ -7,6 +7,7 @@ import com.shutovna.topfive.entities.payload.UpdateSongPayload;
 import com.shutovna.topfive.service.DefaultSongService;
 import com.shutovna.topfive.service.GenreService;
 import com.shutovna.topfive.service.ItemService;
+import com.shutovna.topfive.service.SongService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -30,7 +31,7 @@ import java.util.NoSuchElementException;
 @Slf4j
 @RequiredArgsConstructor
 public class SongController {
-    private final ItemService<Song, NewSongPayload, UpdateSongPayload> songService;
+    private final SongService songService;
 
     private final GenreService genreService;
 

@@ -1,14 +1,13 @@
 package com.shutovna.topfive.service;
 
-import com.shutovna.topfive.entities.User;
-import com.shutovna.topfive.entities.payload.NewSongPayload;
 import com.shutovna.topfive.entities.Song;
 import com.shutovna.topfive.entities.Top;
 import com.shutovna.topfive.entities.TopType;
+import com.shutovna.topfive.entities.User;
+import com.shutovna.topfive.entities.payload.NewSongPayload;
 import com.shutovna.topfive.entities.payload.UpdateSongPayload;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;
@@ -23,7 +22,7 @@ import java.util.Base64;
 @AutoConfigureMockMvc
 public class TopItemIT {
     @Autowired
-    ItemService<Song, NewSongPayload, UpdateSongPayload> songService;
+    SongService songService;
     @Autowired
     private TopService topService;
 

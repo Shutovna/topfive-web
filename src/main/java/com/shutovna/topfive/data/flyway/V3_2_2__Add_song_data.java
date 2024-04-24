@@ -14,7 +14,7 @@ import java.io.FileOutputStream;
 
 @Component
 @Profile("dev")
-public class V3_2_2_Add_song_data extends BaseJavaMigration {
+public class V3_2_2__Add_song_data extends BaseJavaMigration {
     private static final String filename = "example_song.mp3";
     @Value("classpath:" + filename)
     private Resource exampleFile;

@@ -1,0 +1,1 @@
+alter table topfive.video add place character varying(255);

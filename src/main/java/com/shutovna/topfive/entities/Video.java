@@ -13,6 +13,8 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class Video extends Item {
+    protected String place;
+
     protected String director;
 
     protected String actors;
@@ -23,8 +25,9 @@ public class Video extends Item {
     protected Genre genre;
 
     public Video(Integer id, String title, String description, ItemData data, User user,
-                 String director, String actors, Integer releasedYear, Genre genre) {
+                 String place, String director, String actors, Integer releasedYear, Genre genre) {
         super(id, title, description, data, user);
+        this.place = place;
         this.director = director;
         this.actors = actors;
         this.releasedYear = releasedYear;
@@ -34,7 +37,8 @@ public class Video extends Item {
     @Override
     public String toString() {
         return "Video{" +
-                "director='" + director + '\'' +
+                "place='" + place + '\'' +
+                ", director='" + director + '\'' +
                 ", actors='" + actors + '\'' +
                 ", releasedYear=" + releasedYear +
                 ", genre=" + genre +

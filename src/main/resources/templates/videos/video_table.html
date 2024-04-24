@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Все видео</title>
+    <link rel="stylesheet" th:href="@{/styles.css}"></link>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.0.3/css/dataTables.dataTables.css"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdn.datatables.net/2.0.3/js/dataTables.js"></script>
+    <script src="https://cdn.datatables.net/plug-ins/2.0.3/dataRender/datetime.js"></script>
+</head>
+<body class="container">
+
+<div class="container">
+    <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
+        <a data-th-href="@{/tops/table}"
+           class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
+            <img src="/number-5.png" alt="Топ Пять" style="width: 64px; height: 64px">
+            <span class="fs-4 ms-1">Топ Пять</span>
+        </a>
+
+        <ul class="nav nav-pills">
+            <li class="nav-item"><a data-th-href="@{/tops/table}" class="nav-link" aria-current="page">Топы</a></li>
+            <li class="nav-item"><a data-th-href="@{/songs/table}" class="nav-link">Песни</a></li>
+            <li class="nav-item"><a href="#" class="nav-link active">Видео</a></li>
+            <li class="nav-item"><a href="#" class="nav-link">Фото</a></li>
+            <li class="nav-item"><a href="#" class="nav-link">О сайте</a></li>
+        </ul>
+    </header>
+</div>
+
+<a data-th-href="@{/tops/table}">К топам</a>
+<h1>Все видео</h1>
+
+<script>
+    $(document).ready(function () {
+        $('#myTable').DataTable({
+            ajax: {
+                url: '/api/songs/findAll',
+                dataSrc: ''
+            },
+            columns: [
+                {
+                    title: '#',
+                    data: 'item.id',
+                    render: function (data, type, row, meta) {
+                        return '<a href="/songs/' + data + '">' + data + '</a>';
+                    }
+                },
+                {title: 'Исполнитель', data: 'item.artist'},
+                {title: 'Композиция', data: 'item.title'},
+                {title: 'Описание', data: 'item.description'},
+                {title: 'Битрейт', data: 'item.bitRate'},
+                {
+                    title: 'Дата выхода',
+                    data: 'item.releasedAt'
+                },
+                {title: 'Жанр', data: 'item.genre.name'},
+                {title: 'Имя файла', data: 'item.data.filename'},
+                {
+                    title: 'Ссылка',
+                    data: 'url',
+                    render: function (data, type, row, meta) {
+                        return '<audio controls src="' + data + '"></audio>';
+                    }
+                }
+            ]
+        });
+    });
+</script>
+<table id="myTable" class="display"></table>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+</body>
+</html>

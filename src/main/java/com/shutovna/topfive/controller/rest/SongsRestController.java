@@ -25,7 +25,7 @@ public class SongsRestController {
     public ResponseEntity<?> findSongs() {
         log.debug("findSongs");
         try {
-            ItemTable<Song> table = new ItemTable(songService.findAllItems());
+            ItemTable<Song> table = new ItemTable(songService.findAllItemsByClass(Song.class));
             log.debug("returning " + table);
             return new ResponseEntity<>(table.getRows(), HttpStatus.OK);
         }    catch (Exception e) {

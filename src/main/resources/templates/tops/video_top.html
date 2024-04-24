@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>[[${top.title}]]</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" th:href="@{/styles.css}"></link>
+    <script type="text/javascript">
+        function removeItem(itemId) {
+            document.forms[0].itemId.value = itemId;
+            document.forms[0].submit();
+            return false;
+        }
+    </script>
+</head>
+<body class="container">
+<main>
+    <a data-th-href="@{/tops/table}">&larr; К списку топов</a>
+    <h1 data-th-text="${top.title}"></h1>
+    <ul>
+        <li><strong>ID</strong>: <span data-th-text="${top.id}"></span></li>
+        <li><strong>Название</strong>: <span data-th-text="${top.title}"></span></li>
+        <li><strong>Описание</strong>: <span data-th-text="${top.details}"></span></li>
+        <li><strong>Тип</strong>: <span data-th-text="${top.type.name}"></span></li>
+    </ul>
+
+    <form method="post" data-th-action="@{/tops/{topId}/removeItem(topId=${top.id})}">
+        <input type="hidden" data-th-name="topId" data-th-value="${top.id}">
+        <input type="hidden" data-th-name="itemId">
+
+        <div class="container my-3" data-th-each="row : ${items}">
+            <div class="row">
+                <div class="col-sm-6">
+                    <h3 data-th-text="${row.item.title}">Название</h3>
+                    <ul>
+                        <li><strong>ID</strong>: <span data-th-text="${row.item.id}"></span></li>
+                        <li><strong>Описание</strong>: <span data-th-text="${row.item.description}"></span></li>
+                        <li><strong>Место сьемки</strong>: <span data-th-text="${row.item.place}"></span></li>
+                        <li><strong>Режиссер</strong>: <span data-th-text="${row.item.director}"></span></li>
+                        <li><strong>Актеры</strong>: <span data-th-text="${row.item.actors}"></span></li>
+                        <li><strong>Год выпуса</strong>: <span data-th-text="${row.item.releasedYear}"></span></li>
+                        <li><strong>Жанр</strong>: <span data-th-text="${row.item.genre?.name}"></span></li>
+                    </ul>
+                    <a data-th-href="@{/videos/{videoId}(videoId=${row.item.id})}">Изменить</a>
+                    <br>
+                    <a href="#" th:attr="onclick=|removeItem(${row.item.id})|">Убрать</a>
+                </div>
+                <div class="col-sm-6">
+                    <div class='embed-container'>
+                        <video width="560" height="315" controls>
+                            <source data-th-src="${row.url}" type="video/mp4">
+                        </video>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+    <a th:if="${top.items.size < 5}"
+       data-th-href="@{/items/select(topId=${top.id}, successUrl=@{/tops/{topId}/addItem(topId=${top.id})})}">
+        + Добавить видео</a></p>
+
+    <form method="get" data-th-action="@{/tops/{topId}/edit(topId=${top.id})}">
+        <button type="submit">Изменить</button>
+    </form>
+    <form method="post" data-th-action="@{/tops/{topId}/delete(topId=${top.id})}">
+        <button type="submit">Удалить</button>
+    </form>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+            crossorigin="anonymous"></script>
+</main>
+</body>
+</html>

@@ -36,6 +36,11 @@ public class DefaultItemService <T extends Item> implements ItemService<T> {
     }
 
     @Override
+    public List<T> findAllItemsByClass(Class<?> cls) {
+        return itemRepository.findItemsByClass(cls);
+    }
+
+    @Override
     public List<T> findAvailableForTopItems(Integer topId) {
         Top top = topRepository.findById(topId).orElseThrow(NoSuchElementException::new);
         return itemRepository.findAvailableForTop(top, itemClassesByTopType.get(top.getType()));

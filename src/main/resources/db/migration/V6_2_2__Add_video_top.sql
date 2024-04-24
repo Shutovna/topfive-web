@@ -1,0 +1,1 @@
+INSERT INTO topfive.top(id,type,title,details,user_id) VALUES(8, 1, 'Сборник видео', 'Разное', 1)

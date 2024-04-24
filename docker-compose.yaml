@@ -12,6 +12,6 @@ services:
     ports:
       - 5432:5432
     environment:
-      - 'POSTGRES_USER=postgres'
+      - 'POSTGRES_USER=topfive'
       - 'POSTGRES_PASSWORD=password'
-      - 'POSTGaRES_DB=postgres'
+      - 'POSTGaRES_DB=topfive'

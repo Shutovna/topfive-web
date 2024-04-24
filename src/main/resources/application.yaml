@@ -8,8 +8,8 @@ spring:
     name:
       topfive-web
   datasource:
-    url: jdbc:postgresql://topfive-db:5432/postgres
-    username: postgres
+    url: jdbc:postgresql://topfive-db:5432/topfive
+    username: topfive
     password: password
     hikari:
       connectionTimeout: '20000'

@@ -3,7 +3,7 @@ spring:
     active: test
   datasource:
     url: jdbc:tc:postgresql:16:///topfive?TC_DAEMON=true
-    username: postgres
+    username: topfive
     password: password
 
 topfive:

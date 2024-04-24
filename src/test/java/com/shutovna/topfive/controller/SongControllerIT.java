@@ -1,20 +1,13 @@
 package com.shutovna.topfive.controller;
 
-import com.shutovna.topfive.data.GenreRepository;
-import com.shutovna.topfive.entities.ItemData;
 import com.shutovna.topfive.entities.Song;
-import com.shutovna.topfive.entities.User;
-import com.shutovna.topfive.entities.payload.NewSongPayload;
 import com.shutovna.topfive.entities.payload.UpdateSongPayload;
-import com.shutovna.topfive.service.ItemService;
-import com.shutovna.topfive.service.UserService;
+import com.shutovna.topfive.service.SongService;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
@@ -35,12 +28,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @Transactional
 @Sql({"/db/tops.sql", "/db/songs.sql"})
-class SongControllerIT extends BaseSongTest {
+class SongControllerIT extends BaseTest {
     private static final String filename = "example_song.mp3";
 
     @Autowired
     MockMvc mockMvc;
 
+    @Autowired
+    SongService songService;
 
     @Test
     public void testScriptsLoaded() {

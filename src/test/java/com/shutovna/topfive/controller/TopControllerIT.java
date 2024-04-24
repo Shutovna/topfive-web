@@ -1,14 +1,11 @@
 package com.shutovna.topfive.controller;
 
-import com.shutovna.topfive.entities.Top;
-import com.shutovna.topfive.entities.TopType;
-import com.shutovna.topfive.entities.User;
+import com.shutovna.topfive.controller.util.ItemRow;
+import com.shutovna.topfive.entities.*;
 import com.shutovna.topfive.entities.payload.UpdateTopPayload;
 import com.shutovna.topfive.service.TopService;
-import com.shutovna.topfive.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
@@ -29,15 +26,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @Transactional
 @AutoConfigureMockMvc
-@Sql("/db/tops.sql")
+@Sql({"/db/tops.sql", "/db/songs.sql"})
 class TopControllerIT extends BaseTest {
 
     @Autowired
     MockMvc mockMvc;
     @Autowired
     private TopService topService;
-
-
 
     @Test
     void getTop_TopExists_ReturnsTopPage() throws Exception {
@@ -54,7 +49,11 @@ class TopControllerIT extends BaseTest {
                         view().name("tops/song_top"),
                         model().attribute("top",
                                 new Top(1, TopType.SONG, "Top 1", "Details of 1", getTestUser())
-                        )
+                        ),
+                        model().attribute("items", List.of(
+                                new ItemRow<>(getTestSong2(), "/files/Fuel.mp3"),
+                                new ItemRow<>(getTestSong(), "/files/Unforgiven.mp3")
+                        ))
                 );
     }
 

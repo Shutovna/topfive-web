@@ -24,7 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @Transactional
 @Sql({"/db/tops.sql", "/db/songs.sql", "/db/videos.sql"})
-public class ItemSelectControllerIT extends BaseSongTest {
+public class ItemSelectControllerIT extends BaseTest {
     @Autowired
     private ItemRepository<Song> itemRepository;
 

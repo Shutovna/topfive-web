@@ -1,11 +1,9 @@
 package com.shutovna.topfive.controller;
 
 import com.shutovna.topfive.controller.util.ItemRow;
-import com.shutovna.topfive.data.GenreRepository;
 import com.shutovna.topfive.entities.Song;
 import com.shutovna.topfive.entities.payload.NewSongPayload;
-import com.shutovna.topfive.entities.payload.UpdateSongPayload;
-import com.shutovna.topfive.service.ItemService;
+import com.shutovna.topfive.service.SongService;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,11 +32,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
-class SongsControllerIT extends BaseSongTest{
+class SongsControllerIT extends BaseTest {
     private static final String filename = "example_song.mp3";
 
     @Autowired
     MockMvc mockMvc;
+
+    @Autowired
+    SongService songService;
 
     @Value("classpath:" + filename)
     private Resource exampleFile;

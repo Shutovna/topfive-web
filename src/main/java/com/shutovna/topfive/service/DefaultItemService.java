@@ -13,7 +13,7 @@ import java.util.*;
 @RequiredArgsConstructor
 @Service
 @Transactional
-public class DefaultItemService <T extends Item> implements ItemService<T> {
+public class DefaultItemService<T extends Item> implements ItemService<T> {
     private final static Map<TopType, Class<?>> itemClassesByTopType = new HashMap<>();
 
     static {
@@ -44,6 +44,11 @@ public class DefaultItemService <T extends Item> implements ItemService<T> {
     public List<T> findAvailableForTopItems(Integer topId) {
         Top top = topRepository.findById(topId).orElseThrow(NoSuchElementException::new);
         return itemRepository.findAvailableForTop(top, itemClassesByTopType.get(top.getType()));
+    }
+
+    @Override
+    public List<T> findAllByTop(Top top) {
+        return itemRepository.findAllByTop(top);
     }
 
     @Override

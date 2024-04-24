@@ -69,8 +69,8 @@ public class ItemSelectControllerIT extends BaseSongTest {
                         status().isOk(),
                         view().name("songs/select_song"),
                         model().attribute("items", List.of(
-                                new ItemRow<>(getTestSong(), "/files/Unforgiven.mp3"),
-                                new ItemRow<>(getTestSong2(), "/files/Fuel.mp3")))
+                                new ItemRow<>(getTestSong2(), "/files/Fuel.mp3"),
+                                new ItemRow<>(getTestSong(), "/files/Unforgiven.mp3")))
                 );
     }
 

@@ -22,7 +22,7 @@ public class ItemDownloadController {
 
     @GetMapping("/items/{itemId}/file")
     @ResponseBody
-    public ResponseEntity<Resource> downloadItem(@PathVariable Integer itemId) throws IOException {
+    public ResponseEntity<Resource> downloadItem(@PathVariable Integer itemId) {
         log.info("Downloading file for item " + itemId);
         DownloadItemDataPayload itemDataPayload = fileStorageService.getItemDataPayload(itemId);
         Resource rs = new InputStreamResource(itemDataPayload.getInputStream());

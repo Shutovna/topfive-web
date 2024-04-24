@@ -42,7 +42,7 @@ public class TopController {
     @GetMapping
     public String showTop(@ModelAttribute Top top, Model model) {
         log.debug("Showing {}", top);
-        ItemTable<Item> itemTable = new ItemTable<>(top.getItems());
+        ItemTable<Item> itemTable = new ItemTable<>(itemService.findAllByTop(top));
         model.addAttribute("items", itemTable.getRows());
 
         switch (top.getType()) {

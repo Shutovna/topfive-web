@@ -14,8 +14,8 @@ import java.io.FileOutputStream;
 
 @Component
 @Profile("dev")
-public class V6_4__Add_video_file extends BaseJavaMigration {
-    private static final String filename = "example_video.mp4";
+public class V3_2_2_Add_song_data extends BaseJavaMigration {
+    private static final String filename = "example_song.mp3";
     @Value("classpath:" + filename)
     private Resource exampleFile;
 

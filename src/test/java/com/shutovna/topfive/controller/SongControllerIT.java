@@ -44,7 +44,7 @@ class SongControllerIT extends BaseSongTest {
 
     @Test
     public void testScriptsLoaded() {
-        assertEquals(2, songService.findAllItems().size());
+        assertEquals(2, songService.findAllItemsByClass(Song.class).size());
     }
 
     @Test
@@ -79,6 +79,24 @@ class SongControllerIT extends BaseSongTest {
                 .andDo(print())
                 .andExpectAll(
                         status().isForbidden()
+                );
+    }
+
+    @Test
+    void getEditSongPage_SongDoesNotExist_ReturnsError404Page() throws Exception {
+        // given
+        var requestBuilder = MockMvcRequestBuilders.get("/songs/222")
+                .with(user(testUsername))
+                .with(csrf());
+
+        // when
+        this.mockMvc.perform(requestBuilder)
+                // then
+                .andDo(print())
+                .andExpectAll(
+                        status().isNotFound(),
+                        view().name("errors/404"),
+                        model().attribute("error", "Песня не найдена")
                 );
     }
 
@@ -160,6 +178,24 @@ class SongControllerIT extends BaseSongTest {
                 .andDo(print())
                 .andExpectAll(
                         status().isForbidden()
+                );
+    }
+
+    @Test
+    void updateSong_SongDoesNotExist_ReturnsError404Page() throws Exception {
+        // given
+        var requestBuilder = MockMvcRequestBuilders.post("/songs/2222")
+                .with(user(testUsername))
+                .with(csrf());
+
+        // when
+        this.mockMvc.perform(requestBuilder)
+                // then
+                .andDo(print())
+                .andExpectAll(
+                        status().isNotFound(),
+                        view().name("errors/404"),
+                        model().attribute("error", "Песня не найдена")
                 );
     }
 

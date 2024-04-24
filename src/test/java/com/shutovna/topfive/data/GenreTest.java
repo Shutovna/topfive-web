@@ -22,7 +22,7 @@ public class GenreTest {
     @Test
     public void testFindAll() {
         List<Genre> all = genreRepository.findAll();
-        assertEquals(4, all.size());
+        assertEquals(9, all.size());
     }
 
     @Test

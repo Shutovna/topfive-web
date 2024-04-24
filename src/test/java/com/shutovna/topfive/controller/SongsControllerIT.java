@@ -40,11 +40,6 @@ class SongsControllerIT extends BaseSongTest{
     @Autowired
     MockMvc mockMvc;
 
-
-
-
-
-
     @Value("classpath:" + filename)
     private Resource exampleFile;
 

@@ -37,7 +37,7 @@ public class DefaultItemService <T extends Item> implements ItemService<T> {
 
     @Override
     public List<T> findAllItemsByClass(Class<?> cls) {
-        return itemRepository.findItemsByClass(cls);
+        return itemRepository.findAllByClass(cls);
     }
 
     @Override

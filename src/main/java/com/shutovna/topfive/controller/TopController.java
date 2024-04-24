@@ -32,7 +32,6 @@ public class TopController {
 
     private final MessageSource messageSource;
 
-
     @ModelAttribute("top")
     private Top getTop(@PathVariable Integer topId) {
         return topService.findTop(topId).orElseThrow(
@@ -118,4 +117,5 @@ public class TopController {
                         exception.getMessage(), locale));
         return "errors/404";
     }
+
 }

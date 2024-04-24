@@ -25,6 +25,7 @@ public class DefaultTopService implements TopService {
         } else {
             return topRepository.findAllByTitleLikeIgnoreCase("%" + filter + "%");
         }
+        
     }
 
     @Override

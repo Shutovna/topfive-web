@@ -10,17 +10,12 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.MessageSource;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ProblemDetail;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Locale;
 import java.util.NoSuchElementException;
 
 @Controller
@@ -31,8 +26,6 @@ public class VideoController {
     private final VideoService videoService;
 
     private final GenreService genreService;
-
-    private final MessageSource messageSource;
 
     @ModelAttribute("video")
     private Video getVideo(@PathVariable Integer videoId) {
@@ -51,11 +44,11 @@ public class VideoController {
 
     @PostMapping
     public String updateVideo(@ModelAttribute(binding = false) Video video,
-                             @ModelAttribute("previousPage") String previousPage,
-                             @PathVariable Integer videoId,
-                             @Valid UpdateVideoPayload videoPayload,
-                             BindingResult bindingResult,
-                             Model model, HttpServletResponse response
+                              @ModelAttribute("previousPage") String previousPage,
+                              @PathVariable Integer videoId,
+                              @Valid UpdateVideoPayload videoPayload,
+                              BindingResult bindingResult,
+                              Model model, HttpServletResponse response
     ) {
         if (bindingResult.hasErrors()) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -72,17 +65,8 @@ public class VideoController {
 
     @PostMapping("delete")
     public String deleteVideo(@ModelAttribute("previousPage") String previousPage,
-                             @PathVariable Integer videoId) {
+                              @PathVariable Integer videoId) {
         videoService.deleteItem(videoId);
         return "redirect:" + previousPage;
-    }
-
-    @ExceptionHandler(NoSuchElementException.class)
-    public ResponseEntity<ProblemDetail> handleNoSuchElementException(NoSuchElementException exception,
-                                                                      Locale locale) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND,
-                        this.messageSource.getMessage(exception.getMessage(), new Object[0],
-                                exception.getMessage(), locale)));
     }
 }

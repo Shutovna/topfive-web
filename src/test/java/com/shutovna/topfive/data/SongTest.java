@@ -75,7 +75,7 @@ public class SongTest {
         song2.setUser(getTestUser());
         song2 = itemRepository.save(song2);
 
-        List<Song> all = itemRepository.findAll();
+        List<Song> all = itemRepository.findAllByClass(Song.class);
         assertEquals(2, all.size());
 
         Song songDb = itemRepository.findById(song.getId()).orElseThrow();

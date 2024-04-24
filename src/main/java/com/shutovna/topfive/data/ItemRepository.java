@@ -13,5 +13,5 @@ public interface ItemRepository<T extends Item> extends JpaRepository<T, Integer
     List<T> findAvailableForTop(@Param("top") Top top, @Param("type") Class<?> type);
 
     @Query("select i from Item i where TYPE(i) = :type")
-    List<T> findItemsByClass(@Param("type") Class<?> type);
+    List<T> findAllByClass(@Param("type") Class<?> type);
 }

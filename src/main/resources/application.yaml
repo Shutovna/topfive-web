@@ -14,11 +14,6 @@ spring:
     hikari:
       connectionTimeout: '20000'
       maximumPoolSize: '5'
-  flyway:
-    schemas:
-      - public
-      - topfive
-    out-of-order: true
   jpa:
     show-sql: true
   servlet:

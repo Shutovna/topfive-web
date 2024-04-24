@@ -1,0 +1,7 @@
+spring:
+  flyway:
+    schemas:
+      - public
+      - topfive
+    out-of-order: true
+    locations: classpath:db/migration/schema,db/migration/data-common,db/migration/data-dev

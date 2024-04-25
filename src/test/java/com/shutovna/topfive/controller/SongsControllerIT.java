@@ -60,8 +60,8 @@ class SongsControllerIT extends BaseTest {
                         status().isOk(),
                         view().name("songs/song_table"),
                         model().attribute("items", List.of(
-                                new ItemRow<>(getTestSong(), "/files/Unforgiven.mp3"),
-                                new ItemRow<>(getTestSong2(), "/files/Fuel.mp3")
+                                new ItemRow<>(getTestSong2(), "/files/Fuel.mp3"),
+                                new ItemRow<>(getTestSong(), "/files/Unforgiven.mp3")
                         ))
                 );
     }

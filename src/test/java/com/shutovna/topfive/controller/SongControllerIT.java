@@ -40,7 +40,7 @@ class SongControllerIT extends BaseTest {
 
     @Test
     public void testScriptsLoaded() {
-        assertEquals(2, songService.findAllItemsByClass(Song.class).size());
+        assertEquals(2, songService.findAllSongs().size());
     }
 
     @Test

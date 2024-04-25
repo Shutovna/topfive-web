@@ -10,6 +10,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Objects;
 
 @Data
 public class NewVideoPayload {
@@ -62,5 +63,23 @@ public class NewVideoPayload {
         }
         String contentType = file.getContentType();
         return !StringUtils.isEmpty(contentType) && contentType.startsWith("video");
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof NewVideoPayload)) return false;
+        NewVideoPayload that = (NewVideoPayload) o;
+        return Objects.equals(title, that.title) && Objects.equals(description, that.description) &&
+                Objects.equals(place, that.place) && Objects.equals(director, that.director) &&
+                Objects.equals(actors, that.actors) && Objects.equals(releasedYear, that.releasedYear) &&
+                Objects.equals(genreId, that.genreId) && Objects.equals(topId, that.topId)
+                && Objects.equals(file.getOriginalFilename(), that.file.getOriginalFilename());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(title, description, place, director, actors, releasedYear, genreId, topId,
+                file.getOriginalFilename());
     }
 }

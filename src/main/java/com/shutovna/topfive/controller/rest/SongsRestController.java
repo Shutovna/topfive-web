@@ -5,6 +5,7 @@ import com.shutovna.topfive.entities.Song;
 import com.shutovna.topfive.entities.payload.NewSongPayload;
 import com.shutovna.topfive.entities.payload.UpdateSongPayload;
 import com.shutovna.topfive.service.ItemService;
+import com.shutovna.topfive.service.SongService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -19,13 +20,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @Slf4j
 public class SongsRestController {
-    private final ItemService<Song> songService;
+    private final SongService songService;
 
     @RequestMapping(value = "findAll", method = RequestMethod.GET, produces = MimeTypeUtils.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> findSongs() {
         log.debug("findSongs");
         try {
-            ItemTable<Song> table = new ItemTable(songService.findAllItemsByClass(Song.class));
+            ItemTable<Song> table = new ItemTable(songService.findAllSongs());
             log.debug("returning " + table);
             return new ResponseEntity<>(table.getRows(), HttpStatus.OK);
         }    catch (Exception e) {

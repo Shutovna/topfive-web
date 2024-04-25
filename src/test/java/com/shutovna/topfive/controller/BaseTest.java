@@ -24,19 +24,19 @@ public abstract class BaseTest {
         return userService.loadUserByUsername(testUsername);
     }
 
-    protected Song getTestSong2() {
-        return new Song(3, "Fuel", "Another cool song",
-                new ItemData("Fuel.mp3", "audio/mpeg"),
-                getTestUser(), "Metallica",
-                LocalDate.of(1996, 1, 29),
-                256, genreRepository.getReferenceById(1));
-    }
-
     protected Song getTestSong() {
         return new Song(2, "Unforgiven", "Cool song",
                 new ItemData("Unforgiven.mp3", "audio/mpeg"),
                 getTestUser(), "Metallica",
                 LocalDate.of(1990, 11, 29),
-                192, genreRepository.getReferenceById(1));
+                192, genreRepository.getReferenceById(12));
+    }
+
+    protected Song getTestSong2() {
+        return new Song(3, "Fuel", "Another cool song",
+                new ItemData("Fuel.mp3", "audio/mpeg"),
+                getTestUser(), "Metallica",
+                LocalDate.of(1996, 1, 29),
+                256, genreRepository.getReferenceById(12));
     }
 }

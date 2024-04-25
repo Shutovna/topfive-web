@@ -37,7 +37,7 @@ public class VideosController {
     @GetMapping("table")
     public String showVideos(Model model) {
         log.debug("showVideos");
-        ItemTable<Video> itemTable = new ItemTable<>(videoService.findAllItems());
+        ItemTable<Video> itemTable = new ItemTable<>(videoService.findAllVideos());
         model.addAttribute("items", itemTable.getRows());
         return "videos/video_table";
     }
@@ -69,7 +69,7 @@ public class VideosController {
             model.addAttribute("errors", bindingResult.getAllErrors().stream()
                     .map(ObjectError::getDefaultMessage)
                     .toList());
-            return "songs/new_song";
+            return "videos/new_video";
         }
 
         MultipartFile file = videoPayload.getFile();

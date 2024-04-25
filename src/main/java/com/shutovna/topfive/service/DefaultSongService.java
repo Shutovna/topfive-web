@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service
@@ -24,6 +25,11 @@ public class DefaultSongService extends DefaultItemService<Song> implements Song
                               UserRepository userRepository, GenreRepository genreRepository) {
         super(itemRepository, topRepository, fileStorageService, userRepository);
         this.genreRepository = genreRepository;
+    }
+
+    @Override
+    public List<Song> findAllSongs() {
+        return findAllItemsByClass(Song.class);
     }
 
     @Override

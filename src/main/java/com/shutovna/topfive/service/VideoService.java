@@ -6,8 +6,11 @@ import com.shutovna.topfive.entities.payload.NewVideoPayload;
 import com.shutovna.topfive.entities.payload.UpdateVideoPayload;
 
 import java.io.IOException;
+import java.util.List;
 
 public interface VideoService extends ItemService<Video> {
+
+    List<Video> findAllVideos();
 
     Video createItem(NewVideoPayload payload, Integer userId) throws IOException;
 

@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service
@@ -28,6 +29,11 @@ public class DefaultVideoService extends DefaultItemService<Video> implements Vi
                                UserRepository userRepository, GenreRepository genreRepository) {
         super(itemRepository, topRepository, fileStorageService, userRepository);
         this.genreRepository = genreRepository;
+    }
+
+    @Override
+    public List<Video> findAllVideos() {
+        return findAllItemsByClass(Video.class);
     }
 
     @Override

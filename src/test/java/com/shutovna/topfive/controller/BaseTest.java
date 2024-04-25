@@ -4,6 +4,7 @@ import com.shutovna.topfive.data.GenreRepository;
 import com.shutovna.topfive.entities.ItemData;
 import com.shutovna.topfive.entities.Song;
 import com.shutovna.topfive.entities.User;
+import com.shutovna.topfive.service.DefaultUserService;
 import com.shutovna.topfive.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

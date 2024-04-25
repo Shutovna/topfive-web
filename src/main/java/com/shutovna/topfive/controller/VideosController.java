@@ -7,7 +7,7 @@ import com.shutovna.topfive.entities.User;
 import com.shutovna.topfive.entities.Video;
 import com.shutovna.topfive.entities.payload.NewVideoPayload;
 import com.shutovna.topfive.service.GenreService;
-import com.shutovna.topfive.service.UserService;
+import com.shutovna.topfive.service.DefaultUserService;
 import com.shutovna.topfive.service.VideoService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -32,7 +32,7 @@ import java.util.List;
 public class VideosController {
     private final VideoService videoService;
     private final GenreService genreService;
-    private final UserService userService;
+    private final DefaultUserService userService;
 
     @GetMapping("table")
     public String showVideos(Model model) {

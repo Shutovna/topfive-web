@@ -1,17 +1,18 @@
 package com.shutovna.topfive.config;
 
+import com.shutovna.topfive.data.RoleRepository;
+import com.shutovna.topfive.data.UserRepository;
+import com.shutovna.topfive.service.DefaultUserService;
 import com.shutovna.topfive.service.UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
@@ -24,27 +25,29 @@ public class SecurityConfig {
     }
 
     @Bean
-    public UserDetailsManager userDetailsService() {
-        return new UserService();
+    public UserService userService(UserRepository userRepository, RoleRepository roleRepository) {
+        return new DefaultUserService(userRepository, roleRepository);
     }
 
     @Bean
-    public DaoAuthenticationProvider authenticationProvider() {
+    public DaoAuthenticationProvider authenticationProvider(UserService userService) {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-        authProvider.setUserDetailsService(userDetailsService());
+        authProvider.setUserDetailsService(userService);
         authProvider.setPasswordEncoder(passwordEncoder());
         return authProvider;
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.csrf(Customizer.withDefaults())
-                .authorizeHttpRequests(authorizeHttpRequests ->
-                        authorizeHttpRequests.anyRequest().hasRole("USER")
+    public SecurityFilterChain filterChain(HttpSecurity http, AuthenticationProvider provider) throws Exception {
+        return http.csrf(Customizer.withDefaults())
+                .authorizeHttpRequests(authorizeHttpRequests -> authorizeHttpRequests
+                        .requestMatchers("/songs/**", "/videos/**", "/tops/**").hasRole("USER")
+                        .requestMatchers("/admin").hasRole("ADMIN")
+                        .requestMatchers("/", "/**").permitAll()
                 )
-                .formLogin(Customizer.withDefaults())
+                .formLogin(login -> login.loginPage("/login"))
                 .logout(Customizer.withDefaults())
-                .authenticationProvider(authenticationProvider());
-        return http.build();
+                .authenticationProvider(provider)
+                .build();
     }
 }

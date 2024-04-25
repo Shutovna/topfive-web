@@ -8,7 +8,7 @@ import com.shutovna.topfive.entities.User;
 import com.shutovna.topfive.entities.payload.NewSongPayload;
 import com.shutovna.topfive.service.GenreService;
 import com.shutovna.topfive.service.SongService;
-import com.shutovna.topfive.service.UserService;
+import com.shutovna.topfive.service.DefaultUserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -32,7 +32,7 @@ import java.util.List;
 public class SongsController {
     private final SongService songService;
     private final GenreService genreService;
-    private final UserService userService;
+    private final DefaultUserService userService;
 
     @GetMapping("table")
     public String showSongs(Model model) {

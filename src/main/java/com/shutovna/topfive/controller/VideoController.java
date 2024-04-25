@@ -11,6 +11,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.MessageSource;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -18,6 +20,7 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.NoSuchElementException;
 
 @Controller
@@ -28,6 +31,8 @@ public class VideoController {
     private final VideoService videoService;
 
     private final GenreService genreService;
+
+    private final MessageSource messageSource;
 
     @ModelAttribute("video")
     private Video getVideo(@PathVariable Integer videoId) {
@@ -74,5 +79,15 @@ public class VideoController {
                               @PathVariable Integer videoId) {
         videoService.deleteItem(videoId);
         return "redirect:" + previousPage;
+    }
+
+    @ExceptionHandler(NoSuchElementException.class)
+    public String handleNoSuchElementException(NoSuchElementException exception, Model model,
+                                               HttpServletResponse response, Locale locale) {
+        response.setStatus(HttpStatus.NOT_FOUND.value());
+        model.addAttribute("error",
+                this.messageSource.getMessage(exception.getMessage(), new Object[0],
+                        exception.getMessage(), locale));
+        return "errors/404";
     }
 }

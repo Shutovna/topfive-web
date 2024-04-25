@@ -2,8 +2,6 @@ package com.shutovna.topfive.controller;
 
 import com.shutovna.topfive.controller.util.ItemRow;
 import com.shutovna.topfive.data.GenreRepository;
-import com.shutovna.topfive.entities.ItemData;
-import com.shutovna.topfive.entities.User;
 import com.shutovna.topfive.entities.Video;
 import com.shutovna.topfive.entities.payload.NewVideoPayload;
 import com.shutovna.topfive.service.VideoService;
@@ -23,7 +21,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -66,20 +63,6 @@ class VideosControllerIT extends BaseTest {
                                 new ItemRow<>(getTestVideo(), "/files/Video.mp4")
                         ))
                 );
-    }
-
-    private Video getTestVideo() {
-        return new Video(5, "Video", "Cool video",
-                new ItemData("Video.mp4", "video/mpeg"),
-                getTestUser(), "Place 1", "Director 1", "Actors list 1", 2000,
-                genreRepository.getReferenceById(15));
-    }
-
-    private Video getTestVideo2() {
-        return new Video(6, "Video2", "Cool video2",
-                new ItemData("Video2.mp4", "video/mpeg"),
-                getTestUser(), "Place 2", "Director 2", "Actors list 2", 2005,
-                genreRepository.getReferenceById(16));
     }
 
 

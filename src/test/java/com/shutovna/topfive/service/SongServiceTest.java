@@ -51,14 +51,14 @@ public class SongServiceTest {
                 new ItemData("file.mp3", "audio/mpeg"),
                 new User(1), "artist", LocalDate.now(), 192, null);
         List<Song> songsList = List.of(song);
-        doReturn(songsList).when(itemRepository).findAll();
+        doReturn(songsList).when(itemRepository).findAllByClass(Song.class);
 
         // when
-        List<Song> result = songService.findAllItems();
+        List<Song> result = songService.findAllSongs();
 
         // then
         assertEquals(songsList, result);
-        verify(itemRepository).findAll();
+        verify(itemRepository).findAllByClass(Song.class);
         verifyNoMoreInteractions(itemRepository);
         verifyNoMoreInteractions(topRepository);
         verifyNoMoreInteractions(fileStorageService);

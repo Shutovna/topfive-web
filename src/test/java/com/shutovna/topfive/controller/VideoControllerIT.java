@@ -1,9 +1,9 @@
 package com.shutovna.topfive.controller;
 
 import com.shutovna.topfive.data.GenreRepository;
-import com.shutovna.topfive.entities.Song;
-import com.shutovna.topfive.entities.payload.UpdateSongPayload;
-import com.shutovna.topfive.service.SongService;
+import com.shutovna.topfive.entities.Video;
+import com.shutovna.topfive.entities.payload.UpdateVideoPayload;
+import com.shutovna.topfive.service.VideoService;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,25 +28,20 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
-@Sql({"/db/tops.sql", "/db/songs.sql"})
-class SongControllerIT extends BaseTest {
-    private static final String filename = "example_song.mp3";
-
+@Sql({"/db/tops.sql", "/db/videos.sql"})
+class VideoControllerIT extends BaseTest {
+    private static final String filename = "example_video.mp4";
+    
     @Autowired
     MockMvc mockMvc;
 
     @Autowired
-    SongService songService;
+    VideoService videoService;
 
     @Test
-    public void testScriptsLoaded() {
-        assertEquals(2, songService.findAllSongs().size());
-    }
-
-    @Test
-    void getEditSongPage_ReturnsSongPage() throws Exception {
+    void getEditVideoPage_ReturnsVideoPage() throws Exception {
         // given
-        var requestBuilder = MockMvcRequestBuilders.get("/songs/2")
+        var requestBuilder = MockMvcRequestBuilders.get("/videos/5")
                 .with(user(testUsername))
                 .header("Referer", "/tops/1");
 
@@ -56,17 +51,17 @@ class SongControllerIT extends BaseTest {
                 .andDo(print())
                 .andExpectAll(
                         status().isOk(),
-                        model().attribute("song", getTestSong()),
-                        model().attribute("genres", genreRepository.findAllByParentId(GenreRepository.GENRE_MUSIC)),
+                        model().attribute("video", getTestVideo()),
+                        model().attribute("genres", genreRepository.findAllByParentId(GenreRepository.GENRE_VIDEO)),
                         model().attribute("previousPage", "/tops/1"),
-                        view().name("songs/edit_song")
+                        view().name("videos/edit_video")
                 );
     }
 
     @Test
-    void getEditSongPage_UserIsNotAuthorized_ReturnsForbidden() throws Exception {
+    void getEditVideoPage_UserIsNotAuthorized_ReturnsForbidden() throws Exception {
         // given
-        var requestBuilder = MockMvcRequestBuilders.get("/songs/2")
+        var requestBuilder = MockMvcRequestBuilders.get("/videos/5")
                 .with(user(testUsername).roles());
 
         // when
@@ -79,9 +74,9 @@ class SongControllerIT extends BaseTest {
     }
 
     @Test
-    void getEditSongPage_SongDoesNotExist_ReturnsError404Page() throws Exception {
+    void getEditVideoPage_VideoDoesNotExist_ReturnsError404Page() throws Exception {
         // given
-        var requestBuilder = MockMvcRequestBuilders.get("/songs/222")
+        var requestBuilder = MockMvcRequestBuilders.get("/videos/222")
                 .with(user(testUsername))
                 .with(csrf());
 
@@ -92,22 +87,22 @@ class SongControllerIT extends BaseTest {
                 .andExpectAll(
                         status().isNotFound(),
                         view().name("errors/404"),
-                        model().attribute("error", "Песня не найдена")
+                        model().attribute("error", "Видео не найдено")
                 );
     }
 
 
     @Test
-    void updateSong_RequestIsValid_RedirectsToTopPage() throws Exception {
+    void updateVideo_RequestIsValid_RedirectsToTopPage() throws Exception {
         // given
-        var requestBuilder = MockMvcRequestBuilders.post("/songs/2")
-                .param("title", "_changed")
-                .param("artist", "Metallica_changed")
-                .param("description", "Details of song_changed")
-                .param("bitRate", "300")
-                .param("releasedAt", "1999-11-30")
-                .param("genreId", "2")
-                .param("previousPage", "/songs/table")
+        var requestBuilder = MockMvcRequestBuilders.post("/videos/5")
+                .param("title", "Title1_changed")
+                .param("description", "description1_changed")
+                .param("genreId", "17")
+                .param("place", "Place1_changed")
+                .param("director", "Director1_changed")
+                .param("actors", "Actors list1_changed")
+                .param("previousPage", "/videos/table")
                 .with(user(testUsername))
                 .with(csrf());
 
@@ -117,29 +112,29 @@ class SongControllerIT extends BaseTest {
                 .andDo(print())
                 .andExpectAll(
                         status().is3xxRedirection(),
-                        header().string(HttpHeaders.LOCATION, "/songs/table")
+                        header().string(HttpHeaders.LOCATION, "/videos/table")
                 );
 
-        List<Song> allSongs = songService.findAllSongs();
-        assertEquals(2, allSongs.size());
-        Song song = songService.findItem(2).orElseThrow();
-        assertEquals("_changed", song.getTitle());
-        assertEquals("Metallica_changed", song.getArtist());
-        assertEquals("Details of song_changed", song.getDescription());
-        assertEquals(300, song.getBitRate());
-        assertEquals(LocalDate.of(1999, 11, 30), song.getReleasedAt());
-        assertEquals(2, song.getGenre().getId());
-        assertEquals(1, song.getTops().iterator().next().getId());
-        assertEquals("Unforgiven.mp3", song.getData().getFilename());
-        assertEquals("audio/mpeg", song.getData().getContentType());
-        assertEquals(testUsername, song.getUser().getUsername());
+        List<Video> allVideos = videoService.findAllVideos();
+        assertEquals(2, allVideos.size());
+        Video video = videoService.findItem(5).orElseThrow();
+        assertEquals("Title1_changed", video.getTitle());
+        assertEquals("description1_changed", video.getDescription());
+        assertEquals("Place1_changed", video.getPlace());
+        assertEquals("Director1_changed", video.getDirector());
+        assertEquals("Actors list1_changed", video.getActors());
+        assertEquals(17, video.getGenre().getId());
+        assertTrue(video.getTops().isEmpty());
+        assertEquals("Video.mp4", video.getData().getFilename());
+        assertEquals("video/mpeg", video.getData().getContentType());
+        assertEquals(testUsername, video.getUser().getUsername());
     }
 
     @Test
-    void updateSong_RequestIsInValid_ReturnsEditPage() throws Exception {
+    void updateVideo_RequestIsInValid_ReturnsEditPage() throws Exception {
         // given
-        var requestBuilder = MockMvcRequestBuilders.post("/songs/2")
-                .param("artist", "_")
+        var requestBuilder = MockMvcRequestBuilders.post("/videos/5")
+                .param("title", "")
                 .with(user(testUsername))
                 .with(csrf());
 
@@ -149,22 +144,22 @@ class SongControllerIT extends BaseTest {
                 .andDo(print())
                 .andExpectAll(
                         status().isBadRequest(),
-                        model().attribute("payload", new UpdateSongPayload(null, null, "_",
-                                null, null, null)),
+                        model().attribute("payload", new UpdateVideoPayload("", null, null,
+                                null, null, null, null)),
                         model().attribute("errors", Matchers.containsInAnyOrder(
-                                "Название исполнителя должно быть от 2 до 50 символов",
-                                "Название песни должно быть указано",
+                                "Название видео должно быть от 1 до 50 символов",
+                                "Название видео должно быть указано",
                                 "Жанр должен быть указан"
                         )),
-                        view().name("songs/edit_song")
+                        view().name("videos/edit_video")
                 );
     }
 
     @Test
-    void updateSong_UserIsNotAuthorized_ReturnsForbidden() throws Exception {
+    void updateVideo_UserIsNotAuthorized_ReturnsForbidden() throws Exception {
         // given
-        var requestBuilder = MockMvcRequestBuilders.post("/songs/2")
-                .param("artist", "_")
+        var requestBuilder = MockMvcRequestBuilders.post("/videos/5")
+                .param("title", "_")
                 .with(user(testUsername).roles())
                 .with(csrf());
 
@@ -178,9 +173,9 @@ class SongControllerIT extends BaseTest {
     }
 
     @Test
-    void updateSong_SongDoesNotExist_ReturnsError404Page() throws Exception {
+    void updateVideo_VideoDoesNotExist_ReturnsError404Page() throws Exception {
         // given
-        var requestBuilder = MockMvcRequestBuilders.post("/songs/2222")
+        var requestBuilder = MockMvcRequestBuilders.post("/videos/2222")
                 .with(user(testUsername))
                 .with(csrf());
 
@@ -191,17 +186,17 @@ class SongControllerIT extends BaseTest {
                 .andExpectAll(
                         status().isNotFound(),
                         view().name("errors/404"),
-                        model().attribute("error", "Песня не найдена")
+                        model().attribute("error", "Видео не найдено")
                 );
     }
 
 
     @Test
-    void deleteSong_DeleteSong() throws Exception {
+    void deleteVideo_DeleteVideo() throws Exception {
         // given
-        var requestBuilder = MockMvcRequestBuilders.post("/songs/2/delete")
+        var requestBuilder = MockMvcRequestBuilders.post("/videos/5/delete")
                 .with(user(testUsername))
-                .param("previousPage", "/songs/table")
+                .param("previousPage", "/videos/table")
                 .with(csrf());
 
         // when
@@ -210,20 +205,20 @@ class SongControllerIT extends BaseTest {
                 .andDo(print())
                 .andExpectAll(
                         status().is3xxRedirection(),
-                        header().string(HttpHeaders.LOCATION, "/songs/table")
+                        header().string(HttpHeaders.LOCATION, "/videos/table")
                 );
 
-        assertTrue(songService.findItem(2).isEmpty());
-        List<Song> allSongs = songService.findAllSongs();
-        assertEquals(1, allSongs.size());
+        assertTrue(videoService.findItem(5).isEmpty());
+        List<Video> allVideos = videoService.findAllVideos();
+        assertEquals(1, allVideos.size());
     }
 
     @Test
-    void deleteSong_UserIsNotAuthorized_ReturnsForbidden() throws Exception {
+    void deleteVideo_UserIsNotAuthorized_ReturnsForbidden() throws Exception {
         // given
-        var requestBuilder = MockMvcRequestBuilders.post("/songs/2/delete")
+        var requestBuilder = MockMvcRequestBuilders.post("/videos/5/delete")
                 .with(user(testUsername).roles())
-                .param("previousPage", "/songs/table")
+                .param("previousPage", "/videos/table")
                 .with(csrf());
 
         // when
@@ -233,6 +228,5 @@ class SongControllerIT extends BaseTest {
                 .andExpectAll(
                         status().isForbidden()
                 );
-
     }
 }

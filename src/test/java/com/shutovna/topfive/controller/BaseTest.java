@@ -4,6 +4,7 @@ import com.shutovna.topfive.data.GenreRepository;
 import com.shutovna.topfive.entities.ItemData;
 import com.shutovna.topfive.entities.Song;
 import com.shutovna.topfive.entities.User;
+import com.shutovna.topfive.entities.Video;
 import com.shutovna.topfive.service.DefaultUserService;
 import com.shutovna.topfive.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,5 +39,19 @@ public abstract class BaseTest {
                 getTestUser(), "Metallica",
                 LocalDate.of(1996, 1, 29),
                 256, genreRepository.getReferenceById(12));
+    }
+
+    protected Video getTestVideo() {
+        return new Video(5, "Video", "Cool video",
+                new ItemData("Video.mp4", "video/mpeg"),
+                getTestUser(), "Place 1", "Director 1", "Actors list 1", 2000,
+                genreRepository.getReferenceById(15));
+    }
+
+    protected Video getTestVideo2() {
+        return new Video(6, "Video2", "Cool video2",
+                new ItemData("Video2.mp4", "video/mpeg"),
+                getTestUser(), "Place 2", "Director 2", "Actors list 2", 2005,
+                genreRepository.getReferenceById(16));
     }
 }

@@ -147,7 +147,7 @@ class SongsControllerIT extends BaseTest {
                         header().string(HttpHeaders.LOCATION, "/tops/1")
                 );
 
-        List<Song> allSongs = songService.findAllItems();
+        List<Song> allSongs = songService.findAllSongs();
         assertEquals(1, allSongs.size());
         Song song = allSongs.get(0);
         assertEquals("One", song.getTitle());

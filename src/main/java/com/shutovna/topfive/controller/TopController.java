@@ -35,7 +35,7 @@ public class TopController {
     @ModelAttribute("top")
     private Top getTop(@PathVariable Integer topId) {
         return topService.findTop(topId).orElseThrow(
-                () -> new NoSuchElementException("ru.nikitos.msg.top.not_found")
+                () -> new NoSuchElementException("ru.shutovna.msg.top.not_found")
         );
     }
 

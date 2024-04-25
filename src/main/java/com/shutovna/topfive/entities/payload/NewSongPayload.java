@@ -20,18 +20,18 @@ import java.util.Objects;
 @Getter
 @Setter
 public class NewSongPayload {
-    @NotBlank(message = "{ru.nikitos.msg.song.title.not_null}")
-    @Size(min = 1, max = 50, message = "{ru.nikitos.msg.song.title.size}")
+    @NotBlank(message = "{ru.shutovna.msg.song.title.not_null}")
+    @Size(min = 1, max = 50, message = "{ru.shutovna.msg.song.title.size}")
     String title;
     String description;
 
-    @NotBlank(message = "{ru.nikitos.msg.song.artist.not_null}")
-    @Size(min = 2, max = 50, message = "{ru.nikitos.msg.song.artist.size}")
+    @NotBlank(message = "{ru.shutovna.msg.song.artist.not_null}")
+    @Size(min = 2, max = 50, message = "{ru.shutovna.msg.song.artist.size}")
     String artist;
     Integer bitRate;
     @DateTimeFormat(pattern = "dd/MM/yyyy")
     LocalDate releasedAt;
-    @NotNull(message = "{ru.nikitos.msg.song.genre.not_null}")
+    @NotNull(message = "{ru.shutovna.msg.song.genre.not_null}")
     Integer genreId;
 
     Integer topId;
@@ -49,7 +49,7 @@ public class NewSongPayload {
         this.genreId = genreId;
     }
 
-    @AssertTrue(message = "{ru.nikitos.msg.song.file.not_null}")
+    @AssertTrue(message = "{ru.shutovna.msg.song.file.not_null}")
     public boolean isFileSet() {
         try {
             return file != null &&
@@ -59,7 +59,7 @@ public class NewSongPayload {
         }
     }
 
-    @AssertTrue(message = "{ru.nikitos.msg.song.type.is_audio}")
+    @AssertTrue(message = "{ru.shutovna.msg.song.type.is_audio}")
     public boolean isAudioFile() {
         if (file == null) {
             return false;

@@ -22,12 +22,31 @@ public class GenreTest {
     @Test
     public void testFindAll() {
         List<Genre> all = genreRepository.findAll();
-        assertEquals(9, all.size());
+        assertEquals(10, all.size());
     }
 
     @Test
+    public void testFindMusicGenres() {
+        List<Genre> all = genreRepository.findAllByParentId(GenreRepository.GENRE_MUSIC);
+        assertEquals(4, all.size());
+        for(Genre g : all) {
+            assertEquals(GenreRepository.GENRE_MUSIC, g.getParentId());
+        }
+    }
+
+    @Test
+    public void testFindVideoGenres() {
+        List<Genre> all = genreRepository.findAllByParentId(GenreRepository.GENRE_VIDEO);
+        assertEquals(4, all.size());
+        for(Genre g : all) {
+            assertEquals(GenreRepository.GENRE_VIDEO, g.getParentId());
+        }
+    }
+
+
+    @Test
     public void testCreate() {
-        Genre genre = new Genre(null, "New genre");
+        Genre genre = new Genre(null, "New genre", null);
         Genre genreDB = genreRepository.saveAndFlush(genre);
         assertEquals("New genre", genreDB.getName());
         assertNotNull(genreDB.getId());
@@ -36,7 +55,7 @@ public class GenreTest {
 
     @Test
     public void testUpdate() {
-        Genre genre = new Genre(null, "New genre");
+        Genre genre = new Genre(null, "New genre", null);
         Genre genreDB = genreRepository.saveAndFlush(genre);
         genreDB.setName("genre2");
         genreDB = genreRepository.saveAndFlush(genre);

@@ -12,17 +12,17 @@ import java.util.Objects;
 @Getter
 @Setter
 public class UpdateSongPayload {
-    @NotBlank(message = "{ru.nikitos.msg.song.title.not_null}")
-    @Size(min = 1, max = 50, message = "{ru.nikitos.msg.song.title.size}")
+    @NotBlank(message = "{ru.shutovna.msg.song.title.not_null}")
+    @Size(min = 1, max = 50, message = "{ru.shutovna.msg.song.title.size}")
     String title;
     String description;
 
-    @NotBlank(message = "{ru.nikitos.msg.song.artist.not_null}")
-    @Size(min = 2, max = 50, message = "{ru.nikitos.msg.song.artist.size}")
+    @NotBlank(message = "{ru.shutovna.msg.song.artist.not_null}")
+    @Size(min = 2, max = 50, message = "{ru.shutovna.msg.song.artist.size}")
     String artist;
     Integer bitRate;
     LocalDate releasedAt;
-    @NotNull(message = "{ru.nikitos.msg.song.genre.not_null}")
+    @NotNull(message = "{ru.shutovna.msg.song.genre.not_null}")
     Integer genreId;
 
     public UpdateSongPayload(String title, String description, String artist, Integer bitRate, LocalDate releasedAt, Integer genreId) {

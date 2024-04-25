@@ -37,7 +37,7 @@ public class TopsController {
     }
 
     @GetMapping("table")
-    public String showTops(Model model, @RequestParam(value = "filter", required = false) String filter, Principal principal) {
+    public String showTops(Model model, @RequestParam(value = "filter", required = false) String filter) {
         List<Top> tops = topService.findAllTops(filter);
         log.debug("Showing {} tops", tops.size());
         model.addAttribute("tops", tops);

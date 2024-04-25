@@ -100,7 +100,7 @@ public class SongServiceTest {
         byte[] data = {1, 3, 4};
 
         Top top = new Top(topId, TopType.SONG, "title", null, new User(1, testUsername, null));
-        Genre genre = new Genre(1, null);
+        Genre genre = new Genre(1, null, null);
 
         Song song = new Song(null, title, description,
                 new ItemData(filename, contentType),
@@ -113,7 +113,7 @@ public class SongServiceTest {
                 new User(1), artist, releasedAt, bitRate, genre)
         ).when(itemRepository).save(song);
 
-        doReturn(new Genre(1, null)).when(genreRepository).getReferenceById(genreId);
+        doReturn(new Genre(1, null, null)).when(genreRepository).getReferenceById(genreId);
         doReturn(new User(1, testUsername, null)).when(userRepository).getReferenceById(userId);
         MockMultipartFile file = new MockMultipartFile("file", filename, contentType, data);
 
@@ -155,7 +155,7 @@ public class SongServiceTest {
                 new User(1), artist, releasedAt, bitRate, new Genre(genreId)))
         ).when(itemRepository).findById(songId);
 
-        doReturn(new Genre(genreId, null)).when(genreRepository).getReferenceById(1);
+        doReturn(new Genre(genreId, null, null)).when(genreRepository).getReferenceById(1);
 
         // when
         songService.updateItem(songId, new UpdateSongPayload(artist, title, description, bitRate, releasedAt, genreId));

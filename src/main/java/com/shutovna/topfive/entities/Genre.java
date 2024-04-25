@@ -20,6 +20,8 @@ public class Genre {
     @NotNull
     private String name;
 
+    private Integer parentId;
+
     public Genre(Integer id) {
         this.id = id;
     }

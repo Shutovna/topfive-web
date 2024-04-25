@@ -1,6 +1,7 @@
 package com.shutovna.topfive.controller;
 
 import com.shutovna.topfive.controller.util.ItemRow;
+import com.shutovna.topfive.data.GenreRepository;
 import com.shutovna.topfive.entities.Song;
 import com.shutovna.topfive.entities.payload.NewSongPayload;
 import com.shutovna.topfive.service.SongService;
@@ -96,7 +97,7 @@ class SongsControllerIT extends BaseTest {
                 .andExpectAll(
                         status().isOk(),
                         model().attribute("topId", 1),
-                        model().attribute("genres", genreRepository.findAll()),
+                        model().attribute("genres", genreRepository.findAllByParentId(GenreRepository.GENRE_MUSIC)),
                         model().attribute("previousPage", "/tops/1"),
                         view().name("songs/new_song")
                 );

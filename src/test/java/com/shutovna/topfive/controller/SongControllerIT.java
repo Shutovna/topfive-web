@@ -1,5 +1,6 @@
 package com.shutovna.topfive.controller;
 
+import com.shutovna.topfive.data.GenreRepository;
 import com.shutovna.topfive.entities.Song;
 import com.shutovna.topfive.entities.payload.UpdateSongPayload;
 import com.shutovna.topfive.service.SongService;
@@ -56,7 +57,7 @@ class SongControllerIT extends BaseTest {
                 .andExpectAll(
                         status().isOk(),
                         model().attribute("song", getTestSong()),
-                        model().attribute("genres", genreRepository.findAll()),
+                        model().attribute("genres", genreRepository.findAllByParentId(GenreRepository.GENRE_MUSIC)),
                         model().attribute("previousPage", "/tops/1"),
                         view().name("songs/edit_song")
                 );

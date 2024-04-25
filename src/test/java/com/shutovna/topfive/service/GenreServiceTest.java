@@ -25,7 +25,7 @@ class GenreServiceTest {
     @Test
     void findAllGenres_ReturnsGenreList() {
         List<Genre> genres = IntStream.rangeClosed(1, 4).mapToObj(
-                value -> new Genre(value, "Title %d".formatted(value))
+                value -> new Genre(value, "Title %d".formatted(value), null)
         ).toList();
 
         doReturn(genres).when(genreRepository).findAll();

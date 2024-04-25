@@ -2,6 +2,7 @@ package com.shutovna.topfive.controller;
 
 import com.shutovna.topfive.controller.util.ItemTable;
 import com.shutovna.topfive.controller.util.WebUtil;
+import com.shutovna.topfive.entities.Genre;
 import com.shutovna.topfive.entities.Song;
 import com.shutovna.topfive.entities.User;
 import com.shutovna.topfive.entities.payload.NewSongPayload;
@@ -22,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.security.Principal;
+import java.util.List;
 
 @Controller
 @RequestMapping("/songs")
@@ -40,12 +42,16 @@ public class SongsController {
         return "songs/song_table";
     }
 
+    @ModelAttribute("genres")
+    public List<Genre> getGenres() {
+        return genreService.findMusicGenres();
+    }
+
 
     @GetMapping("create")
     public String showCreateForm(@RequestParam(required = false) Integer topId, Model model,
                                  HttpServletRequest request) {
         model.addAttribute("topId", topId);
-        model.addAttribute("genres", genreService.findGenres());
         model.addAttribute("previousPage", WebUtil.getPreviousPageByRequest(request));
         return "songs/new_song";
     }
@@ -60,7 +66,6 @@ public class SongsController {
         if (bindingResult.hasErrors()) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             model.addAttribute("payload", songPayload);
-            model.addAttribute("genres", genreService.findGenres());
             model.addAttribute("errors", bindingResult.getAllErrors().stream()
                     .map(ObjectError::getDefaultMessage)
                     .toList());

@@ -14,7 +14,7 @@ spring:
 
 topfive:
   test:
-    username: nikitos
+    username: shutovna
   file:
     store:
       dir: topfive-test-data

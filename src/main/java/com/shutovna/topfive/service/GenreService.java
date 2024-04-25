@@ -5,4 +5,8 @@ import java.util.List;
 
 public interface GenreService {
     List<Genre> findGenres();
+
+    List<Genre> findMusicGenres();
+
+    List<Genre> findVideoGenres();
 }

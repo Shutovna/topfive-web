@@ -45,7 +45,7 @@ public class SongTest {
     }
 
     private Song getSong() {
-        Genre genre = entityManager.find(Genre.class, 1);
+        Genre genre = entityManager.find(Genre.class, 12);
         Song song = new Song();
         song.setArtist("Metallica");
         song.setTitle("Unforgiven");
@@ -59,7 +59,7 @@ public class SongTest {
 
     @Test
     public void testItemRepositoryCreate() {
-        Genre genre = genreRepository.findByName("Metall");
+        Genre genre = genreRepository.findByName("Рок");
 
         Song song = getSong();
         song = itemRepository.save(song);
@@ -90,7 +90,7 @@ public class SongTest {
         assertEquals(312, songDb.getBitRate());
         assertEquals(LocalDate.now(), songDb.getReleasedAt());
         assertEquals(1, songDb.getUser().getId());
-        assertEquals("nikitos", songDb.getUser().getUsername());
+        assertEquals("shutovna", songDb.getUser().getUsername());
         assertTrue(songDb.getRatings().isEmpty());
 
         Song songDb2 = itemRepository.findById(song2.getId()).orElseThrow();
@@ -114,7 +114,7 @@ public class SongTest {
         song.setDescription("newDescription");
         song.getData().setFilename("newFilename");
         song.getData().setContentType("newFileType");
-        Genre genre2 = genreRepository.findByName("Classic");
+        Genre genre2 = genreRepository.findByName("Классика");
         song.setGenre(genre2);
         song.setBitRate(300);
         releasedAt = releasedAt.plusDays(1);
@@ -130,7 +130,7 @@ public class SongTest {
         assertEquals(300, songDB.getBitRate());
         assertEquals(releasedAt, songDB.getReleasedAt());
         assertEquals(1, songDB.getUser().getId());
-        assertEquals("nikitos", songDB.getUser().getUsername());
+        assertEquals("shutovna", songDB.getUser().getUsername());
 
     }
 

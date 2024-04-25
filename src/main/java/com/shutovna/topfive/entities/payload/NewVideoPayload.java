@@ -13,8 +13,8 @@ import java.io.IOException;
 
 @Data
 public class NewVideoPayload {
-    @NotBlank(message = "{ru.nikitos.msg.video.title.not_null}")
-    @Size(min = 1, max = 50, message = "{ru.nikitos.msg.video.title.size}")
+    @NotBlank(message = "{ru.shutovna.msg.video.title.not_null}")
+    @Size(min = 1, max = 50, message = "{ru.shutovna.msg.video.title.size}")
     String title;
     String description;
 
@@ -26,7 +26,7 @@ public class NewVideoPayload {
 
     Integer releasedYear;
 
-    @NotNull(message = "{ru.nikitos.msg.video.genre.not_null}")
+    @NotNull(message = "{ru.shutovna.msg.video.genre.not_null}")
     Integer genreId;
 
     Integer topId;
@@ -45,7 +45,7 @@ public class NewVideoPayload {
         this.genreId = genreId;
     }
 
-    @AssertTrue(message = "{ru.nikitos.msg.video.file.not_null}")
+    @AssertTrue(message = "{ru.shutovna.msg.video.file.not_null}")
     public boolean isFileSet() {
         try {
             return file != null &&
@@ -55,7 +55,7 @@ public class NewVideoPayload {
         }
     }
 
-    @AssertTrue(message = "{ru.nikitos.msg.video.type.is_audio}")
+    @AssertTrue(message = "{ru.shutovna.msg.video.type.is_audio}")
     public boolean isVideoFile() {
         if (file == null) {
             return false;

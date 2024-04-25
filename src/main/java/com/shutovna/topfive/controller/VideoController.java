@@ -1,6 +1,7 @@
 package com.shutovna.topfive.controller;
 
 import com.shutovna.topfive.controller.util.WebUtil;
+import com.shutovna.topfive.entities.Genre;
 import com.shutovna.topfive.entities.Video;
 import com.shutovna.topfive.entities.payload.UpdateVideoPayload;
 import com.shutovna.topfive.service.GenreService;
@@ -16,6 +17,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @Controller
@@ -30,15 +32,19 @@ public class VideoController {
     @ModelAttribute("video")
     private Video getVideo(@PathVariable Integer videoId) {
         return videoService.findItem(videoId).orElseThrow(
-                () -> new NoSuchElementException("ru.nikitos.msg.video.not_found")
+                () -> new NoSuchElementException("ru.shutovna.msg.video.not_found")
         );
+    }
+
+    @ModelAttribute("genres")
+    public List<Genre> getGenres() {
+        return genreService.findVideoGenres();
     }
 
     @GetMapping
     public String editVideo(@ModelAttribute Video video, Model model, HttpServletRequest request) {
         log.debug("Editing {}", video);
         model.addAttribute("previousPage", WebUtil.getPreviousPageByRequest(request));
-        model.addAttribute("genres", genreService.findGenres());
         return "videos/edit_video";
     }
 

@@ -50,7 +50,7 @@ public class DefaultTopService implements TopService {
                             top.setTitle(title);
                             top.setDetails(details);
                         }, () -> {
-                            throw new NoSuchElementException("ru.nikitos.msg.top.not_found");
+                            throw new NoSuchElementException("ru.shutovna.msg.top.not_found");
                         }
                 );
     }

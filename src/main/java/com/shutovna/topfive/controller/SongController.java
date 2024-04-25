@@ -1,6 +1,7 @@
 package com.shutovna.topfive.controller;
 
 import com.shutovna.topfive.controller.util.WebUtil;
+import com.shutovna.topfive.entities.Genre;
 import com.shutovna.topfive.entities.Song;
 import com.shutovna.topfive.entities.payload.NewSongPayload;
 import com.shutovna.topfive.entities.payload.UpdateSongPayload;
@@ -23,6 +24,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Locale;
 import java.util.NoSuchElementException;
 
@@ -40,15 +42,19 @@ public class SongController {
     @ModelAttribute("song")
     private Song getSong(@PathVariable Integer songId) {
         return songService.findItem(songId).orElseThrow(
-                () -> new NoSuchElementException("ru.nikitos.msg.song.not_found")
+                () -> new NoSuchElementException("ru.shutovna.msg.song.not_found")
         );
+    }
+
+    @ModelAttribute("genres")
+    public List<Genre> getGenres() {
+        return genreService.findMusicGenres();
     }
 
     @GetMapping
     public String editSong(@ModelAttribute Song song, Model model, HttpServletRequest request) {
         log.debug("Editing {}", song);
         model.addAttribute("previousPage", WebUtil.getPreviousPageByRequest(request));
-        model.addAttribute("genres", genreService.findGenres());
         return "songs/edit_song";
     }
 

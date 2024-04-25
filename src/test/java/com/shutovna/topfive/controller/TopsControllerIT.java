@@ -136,7 +136,7 @@ class TopsControllerIT extends BaseTest {
         assertEquals("New top", top.getTitle());
         assertEquals("Details of top 1", top.getDetails());
         assertEquals(TopType.SONG, top.getType());
-        assertEquals("nikitos", top.getUser().getUsername());
+        assertEquals("shutovna", top.getUser().getUsername());
     }
 
     @Test
